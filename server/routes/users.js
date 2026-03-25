@@ -4,7 +4,7 @@
  *    name: users
  *    descriptions: Users Routes
  */
-import express from 'express';
+import express from "express";
 const router = express.Router();
 
 /**
@@ -17,8 +17,8 @@ const router = express.Router();
  *       200:
  *         description: a resource
  */
-router.get('/', function(req, res, next) {
-  res.sendStatus('respond with a resource');
+router.get("/", function (req, res, next) {
+  res.sendStatus("respond with a resource");
 });
 
 export default router;

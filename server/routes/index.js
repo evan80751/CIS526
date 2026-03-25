@@ -3,7 +3,7 @@
  *   name: index
  *   description: Index Routes
  */
-import express from 'express';
+import express from "express";
 const router = express.Router();
 
 /**
@@ -17,8 +17,8 @@ const router = express.Router();
  *       200:
  *         description: success
  */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get("/", function (req, res, next) {
+  res.render("index", { title: "Express" });
 });
 
 export default router;
