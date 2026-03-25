@@ -1,13 +1,14 @@
 /**
  * @swagger
  * tags:
- *    name: users
- *    descriptions: Users Routes
+ *   name: users
+ *   description: Users Routes
  */
 import express from "express";
 const router = express.Router();
 
 /**
+ * @swagger
  * /users:
  *   get:
  *     summary: users list page
@@ -18,7 +19,7 @@ const router = express.Router();
  *         description: a resource
  */
 router.get("/", function (req, res, next) {
-  res.sendStatus("respond with a resource");
+  res.send("respond with a resource");
 });
 
 export default router;

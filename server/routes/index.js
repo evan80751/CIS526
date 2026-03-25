@@ -1,4 +1,5 @@
 /**
+ * @swagger
  * tags:
  *   name: index
  *   description: Index Routes
@@ -10,9 +11,9 @@ const router = express.Router();
  * @swagger
  * /:
  *   get:
- *     summar: index page
+ *     summary: index page
  *     description: Gets the index page for the application
- *     tage: [index]
+ *     tags: [index]
  *     responses:
  *       200:
  *         description: success
