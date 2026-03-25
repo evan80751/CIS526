@@ -7,10 +7,13 @@ import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import compression from 'compression';
 import helmet from 'helmet';
+import swaggerUI from 'swagger-ui-express';
+import openapi from './configs/openapi.js';
+import logger from './configs/logger.js';
 
 var app = express();
 
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
 
 app.use(requestLogger);
@@ -20,5 +23,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(import.meta.dirname, 'public')));
 app.use('/'  , indexRouter);
 app.use('/users', usersRouter);
+
+if (process.env.OPENAPI_VISIBLE === 'true') {
+  logger.warn('OpenAPI documentation visible!');
+  app.use('/docs', swaggerUI.serve, swaggerUI.setup(openapi, {explorer: true}));
+}
 
 export default app;
