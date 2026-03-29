@@ -5,8 +5,8 @@
  *   description: Users Routes
  */
 import express from "express";
+import { User, Role } from '../models/models.js';
 const router = express.Router();
-
 /**
  * @swagger
  * /users:
@@ -16,10 +16,26 @@ const router = express.Router();
  *     tags: [users]
  *     responses:
  *       200:
- *         description: a resource
+ *         description: the list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
  */
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource");
+router.get("/", async function (req, res, next) {
+  const users = await User.findAll({
+    include: {
+      model: Role,
+      as: "roles",
+      attributes: ['id', 'role'],
+      through: {
+        attributes: [],
+      },
+    },
+  });
+  res.json(users);
 });
 
 export default router;

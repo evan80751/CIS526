@@ -15,14 +15,41 @@ function level() {
       return "verbose";
     if (process.env.LOG_LEVEL === "5" || process.env.LOG_LEVEL === "debug")
       return "debug";
-    if (process.env.LOG_LEVEL === "6" || process.env.LOG_LEVEL === "silly")
+    if (process.env.LOG_LEVEL === "6" || process.env.LOG_LEVEL === "sql")
+      return "sql";
+    if (process.env.LOG_LEVEL === "7" || process.env.LOG_LEVEL === "silly")
       return "silly";
   }
   return "http";
 }
 
+const levels = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  http: 3,
+  verbose: 4,
+  debug: 5,
+  sql: 6,
+  silly: 7,
+};
+
+const colors = {
+  error: "red",
+  warn: "yellow",
+  info: "green",
+  http: "green",
+  verbose: "cyan",
+  debug: "blue",
+  sql: "gray",
+  silly: "magenta",
+};
+
+winston.addColors(colors);
+
 const logger = winston.createLogger({
   level: level(),
+  levels: levels,
   format: combine(
     colorize({ all: true }),
     errors({ stack: true }),
