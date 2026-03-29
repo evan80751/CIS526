@@ -1,11 +1,11 @@
 /**
- * @file Databse models
- * @author: Evan Jelle
+ * @file Database models
+ * @author Evan Jelle
  * @exports User a Sequelize User model
  * @exports Role a Sequelize Role model
  * @exports UserRole a Sequelize UserRole model
  */
-// Import databse connection
+// Import database connection
 import database from "../configs/database.js";
 // Import Schemas
 import UserSchema from "./user.js";

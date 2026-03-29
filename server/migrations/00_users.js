@@ -1,8 +1,8 @@
 /**
- * @file: Users table migration
- * @author: Evan Jelle
- * @exports: up the Up migration
- * @exports: down the Down migration
+ * @file Users table migration
+ * @author Evan Jelle
+ * @exports up the Up migration
+ * @exports down the Down migration
  */
 // Import Libraries
 import {Sequelize} from "sequelize";

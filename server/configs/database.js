@@ -1,7 +1,7 @@
 /**
  * @file Configuration information for Sequelize database ORM
- * @author: Evan Jelle
- * @exports: sequelize a Sequelize instance
+ * @author Evan Jelle
+ * @exports sequelize a Sequelize instance
  */
 // Import libraries
 import Sequelize from 'sequelize';

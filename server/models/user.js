@@ -1,6 +1,6 @@
 /**
  * @file User schema
- * @author: Evan Jelle
+ * @author Evan Jelle
  * @exports UserSchema the schema for the User model
  */
 // Import libraries

@@ -1,3 +1,8 @@
+/**
+ * @file Configuration information for Winston logger
+ * @author Evan Jelle
+ * @exports logger a Winston logger object
+ */
 import winston from "winston";
 const { combine, timestamp, printf, colorize, align, errors } = winston.format;
 

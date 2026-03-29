@@ -1,7 +1,7 @@
 /**
- * @file: Configuration information for Umzug migration engine
- * @author: Evan Jelle
- * @exports: umzug an Umzug instance
+ * @file Configuration information for Umzug migration engine
+ * @author Evan Jelle
+ * @exports umzug an Umzug instance
  */
 // Import Libraries
 import { Umzug, SequelizeStorage } from 'umzug';
