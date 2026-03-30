@@ -75,6 +75,7 @@ const Community = database.define(
     }
 )
 
+// Create Document Model
 const Document = database.define(
     'Document',
     DocumentSchema,
