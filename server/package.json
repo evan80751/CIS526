@@ -12,6 +12,7 @@
   "dependencies": {
     "@dotenvx/dotenvx": "^1.57.2",
     "compression": "^1.8.1",
+    "convert-csv-to-json": "^4.24.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "^4.22.1",
