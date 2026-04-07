@@ -35,10 +35,39 @@ const getAllVersions = () => {
 };
 
 /**
+ * Check JSON Schema of API versions
+ */
+const getVersionsSchemaMatch = () => {
+  it("all versions should match schema", (done) => {
+    const schema = {
+      type: "array",
+      items: {
+        type: "object",
+        required: ["version", "url"],
+        properties: {
+          version: { type: "string" },
+          url: { type: "string" },
+        },
+        additionalProperties: false,
+      },
+    };
+    request(app)
+      .get("/api/")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        res.body.should.be.jsonSchema(schema);
+        done();
+      });
+  });
+};
+
+/**
  * Test /api route
  */
 describe("/api", () => {
     describe("GET /", () => {
         getAllVersions();
+        getVersionsSchemaMatch();
     });
 });
