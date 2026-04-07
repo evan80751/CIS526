@@ -56,7 +56,6 @@ const County = database.define("County", CountySchema, {
 // Create Community Model
 const Community = database.define("Community", CommunitySchema, {
   tableName: "communities",
-  underscored: true,
 });
 
 // Create Document Model
