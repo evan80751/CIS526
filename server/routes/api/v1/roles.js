@@ -2,7 +2,7 @@
  * @file Roles API router
  * @author Evan Jelle
  * @exports
- * 
+ *
  * @swagger
  * tags:
  *   name: roles
@@ -23,11 +23,11 @@ const router = express.Router();
 
 /**
  * Gets the list of roles
- * 
+ *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
- * 
+ *
  * @swagger
  * /api/v1/roles:
  *   get:
@@ -44,14 +44,14 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Role'
  */
-router.get("/", async function(req, res, next) {
-    try {
-        const roles = await Role.findAll();
-        res.json(roles);
-    } catch (error) {
-        logger.error(error);
-        res.status(500).end();
-    }
+router.get("/", async function (req, res, next) {
+  try {
+    const roles = await Role.findAll();
+    res.json(roles);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).end();
+  }
 });
 
 export default router;

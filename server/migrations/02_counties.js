@@ -4,10 +4,10 @@
  * @exports up the Up migration
  * @exports down the Down migration
  */
-import Sequelize from 'sequelize';
+import Sequelize from "sequelize";
 
 export async function up({ context: queryInterface }) {
-  await queryInterface.createTable('counties', {
+  await queryInterface.createTable("counties", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -45,5 +45,5 @@ export async function up({ context: queryInterface }) {
 }
 
 export async function down({ context: queryInterface }) {
-  await queryInterface.dropTable('counties');
+  await queryInterface.dropTable("counties");
 }

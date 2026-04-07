@@ -4,7 +4,7 @@
  * @exports RoleSchema the schema for the Role model
  */
 // Import libraries
-import Sequelize from 'sequelize';
+import Sequelize from "sequelize";
 
 /**
  * @swagger
@@ -53,6 +53,6 @@ const RoleSchema = {
     type: Sequelize.DATE,
     allowNull: false,
   },
-}
+};
 
-export default RoleSchema
+export default RoleSchema;

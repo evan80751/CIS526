@@ -33,6 +33,6 @@ if (process.env.OPENAPI_VISIBLE === "true") {
     swaggerUI.serve,
     swaggerUI.setup(openapi, { explorer: true }),
   );
-};
+}
 
 export default app;

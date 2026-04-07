@@ -5,10 +5,10 @@
  * @exports down the Down migration
  */
 // Import Libraries
-import {Sequelize} from 'sequelize';
+import { Sequelize } from "sequelize";
 
-export async function up({context: queryInterface}) {
-  await queryInterface.createTable('roles', {
+export async function up({ context: queryInterface }) {
+  await queryInterface.createTable("roles", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -26,24 +26,24 @@ export async function up({context: queryInterface}) {
       type: Sequelize.DATE,
       allowNull: false,
     },
-  })
-  await queryInterface.createTable('user_roles', {
+  });
+  await queryInterface.createTable("user_roles", {
     user_id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      references: { model: 'users', key: 'id' },
-      onDelete: "cascade"
+      references: { model: "users", key: "id" },
+      onDelete: "cascade",
     },
     role_id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      references: { model: 'roles', key: 'id' },
-      onDelete: "cascade"
-    }
-  })
+      references: { model: "roles", key: "id" },
+      onDelete: "cascade",
+    },
+  });
 }
 
-export async function down({context: queryInterface}) {
-  await queryInterface.dropTable('user_roles');
-  await queryInterface.dropTable('roles');
+export async function down({ context: queryInterface }) {
+  await queryInterface.dropTable("user_roles");
+  await queryInterface.dropTable("roles");
 }

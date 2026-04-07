@@ -4,7 +4,7 @@
  * @exports UserSchema the schema for the User model
  */
 // Import libraries
-import Sequelize from 'sequelize';
+import Sequelize from "sequelize";
 
 /**
  * @swagger
@@ -46,24 +46,24 @@ import Sequelize from 'sequelize';
  */
 
 const UserSchema = {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    username: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: false,
-    },
-    createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-    },
-    updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-    },
-}
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  username: {
+    type: Sequelize.STRING,
+    unique: true,
+    allowNull: false,
+  },
+  createdAt: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+};
 
-export default UserSchema
+export default UserSchema;

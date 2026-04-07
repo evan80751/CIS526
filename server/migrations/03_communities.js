@@ -4,10 +4,10 @@
  * @exports up the Up migration
  * @exports down the Down migration
  */
-import Sequelize from 'sequelize';
+import Sequelize from "sequelize";
 
 export async function up({ context: queryInterface }) {
-  await queryInterface.createTable('communities', {
+  await queryInterface.createTable("communities", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -28,14 +28,14 @@ export async function up({ context: queryInterface }) {
     owner_user_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: { model: 'users', key: 'id' },
-      onDelete: 'cascade',
+      references: { model: "users", key: "id" },
+      onDelete: "cascade",
     },
     county_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: { model: 'counties', key: 'id' },
-      onDelete: 'cascade',
+      references: { model: "counties", key: "id" },
+      onDelete: "cascade",
     },
     createdAt: {
       type: Sequelize.DATE,
@@ -49,5 +49,5 @@ export async function up({ context: queryInterface }) {
 }
 
 export async function down({ context: queryInterface }) {
-  await queryInterface.dropTable('communities');
+  await queryInterface.dropTable("communities");
 }

@@ -11,44 +11,44 @@ const now = new Date().toISOString().slice(0, 23).replace("T", " ") + " +00:00";
 const users = [
   {
     id: 1,
-    username: 'admin',
+    username: "admin",
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   },
   {
     id: 2,
-    username: 'contributor',
+    username: "contributor",
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   },
   {
     id: 3,
-    username: 'manager',
+    username: "manager",
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   },
   {
     id: 4,
-    username: 'user',
+    username: "user",
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   },
 ];
 
 /**
  * Apply the seed
- * 
+ *
  * @param {queryInterface} context
  */
-export async function up({context: queryInterface}) {
-  await queryInterface.bulkInsert('users', users);
+export async function up({ context: queryInterface }) {
+  await queryInterface.bulkInsert("users", users);
 }
 
 /**
  * Roll back the seed
- * 
+ *
  * @param {queryInterface} context
  */
-export async function down({context: queryInterface}) {
+export async function down({ context: queryInterface }) {
   await queryInterface.bulkDelete("users", {}, { truncate: true });
 }

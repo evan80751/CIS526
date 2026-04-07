@@ -21,17 +21,17 @@ should();
  * Get all API version
  */
 const getAllVersions = () => {
-    it("should list all API versions", (done) => {
-        request(app)
-        .get("/api/")
-        .expect(200)
-        .end((err, res) => {
-            if (err) return done(err);
-            res.body.should.be.an("array");
-            res.body.should.have.lengthOf(1);
-            done();
-        });
-    });
+  it("should list all API versions", (done) => {
+    request(app)
+      .get("/api/")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        res.body.should.be.an("array");
+        res.body.should.have.lengthOf(1);
+        done();
+      });
+  });
 };
 
 /**
@@ -66,8 +66,8 @@ const getVersionsSchemaMatch = () => {
  * Test /api route
  */
 describe("/api", () => {
-    describe("GET /", () => {
-        getAllVersions();
-        getVersionsSchemaMatch();
-    });
+  describe("GET /", () => {
+    getAllVersions();
+    getVersionsSchemaMatch();
+  });
 });

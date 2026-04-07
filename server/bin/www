@@ -2,9 +2,9 @@
 import app from "../app.js";
 import logger from "../configs/logger.js";
 import http from "http";
-import database from '../configs/database.js';
-import migrations from '../configs/migrations.js';
-import seeds from '../configs/seeds.js';
+import database from "../configs/database.js";
+import migrations from "../configs/migrations.js";
+import seeds from "../configs/seeds.js";
 
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
@@ -53,21 +53,21 @@ function onListening() {
 function startup() {
   try {
     database.authenticate().then(() => {
-      logger.debug("Database connection successful")
+      logger.debug("Database connection successful");
       migrations.up().then(() => {
-        logger.debug("Database migrations complete")
-        if (process.env.SEED_DATA === 'true') {
-          logger.warn("Database data seeding is enabled!")
+        logger.debug("Database migrations complete");
+        if (process.env.SEED_DATA === "true") {
+          logger.warn("Database data seeding is enabled!");
           seeds.up().then(() => {
-            logger.debug("Database seeding complete")
-            server.listen(port)
-          })
+            logger.debug("Database seeding complete");
+            server.listen(port);
+          });
         } else {
-          server.listen(port)
+          server.listen(port);
         }
-      })
-    })
+      });
+    });
   } catch (error) {
-    logger.error(error)
+    logger.error(error);
   }
 }

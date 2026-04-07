@@ -5,7 +5,7 @@
  *   description: Users Routes
  */
 import express from "express";
-import { User, Role } from '../models/models.js';
+import { User, Role } from "../models/models.js";
 const router = express.Router();
 /**
  * @swagger
@@ -29,7 +29,7 @@ router.get("/", async function (req, res, next) {
     include: {
       model: Role,
       as: "roles",
-      attributes: ['id', 'role'],
+      attributes: ["id", "role"],
       through: {
         attributes: [],
       },
