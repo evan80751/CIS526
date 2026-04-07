@@ -15,6 +15,7 @@ import express from "express";
 // Import v1 routers
 import rolesRouter from "./api/v1/roles.js";
 import usersRouter from "./api/v1/users.js";
+import countiesRouter from "./api/v1/counties.js";
 
 // Create Express router
 const router = express.Router();
@@ -22,6 +23,7 @@ const router = express.Router();
 // Use v1 routers
 router.use("/v1/roles", rolesRouter);
 router.use("/v1/users", usersRouter);
+router.use("/v1/counties", countiesRouter);
 
 /**
  * Gets the list of API versions

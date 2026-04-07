@@ -9,7 +9,7 @@
     "lint": "npx eslint --fix .",
     "format": "npx prettier . --write",
     "test": "mocha --require test/hooks.js --recursive --parallel --timeout 2000 --exit",
-    "converage": "c8 npm test"
+    "coverage": "c8 npm test"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.57.2",
