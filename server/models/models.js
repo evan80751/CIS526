@@ -66,7 +66,6 @@ const Document = database.define("Document", DocumentSchema, {
 // Create Metadata Model
 const Metadata = database.define("Metadata", MetadataSchema, {
   tableName: "metadata",
-  underscored: true,
 });
 
 // Create MetadataDocument Model
@@ -108,22 +107,26 @@ Metadata.belongsToMany(Document, {
   through: MetadataDocument,
   unique: false,
   as: "documents",
+  foreignKey: "metadata_id",
 });
 Document.belongsToMany(Metadata, {
   through: MetadataDocument,
   unique: false,
   as: "metadata",
+  foreignKey: "document_id",
 });
 
 Metadata.belongsToMany(Community, {
   through: MetadataCommunity,
   unique: false,
   as: "communities",
+  foreignKey: "metadata_id",
 });
 Community.belongsToMany(Metadata, {
   through: MetadataCommunity,
   unique: false,
   as: "metadata",
+  foreignKey: "community_id",
 });
 
 export {

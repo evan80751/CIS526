@@ -18,6 +18,7 @@ import usersRouter from "./api/v1/users.js";
 import countiesRouter from "./api/v1/counties.js";
 import communitiesRouter from "./api/v1/communities.js";
 import documentRouter from "./api/v1/documents.js";
+import metadataRouter from "./api/v1/metadata.js";
 
 // Create Express router
 const router = express.Router();
@@ -28,6 +29,7 @@ router.use("/v1/users", usersRouter);
 router.use("/v1/counties", countiesRouter);
 router.use("/v1/communities", communitiesRouter);
 router.use("/v1/documents", documentRouter);
+router.use("/v1/metadata", metadataRouter);
 
 /**
  * Gets the list of API versions
