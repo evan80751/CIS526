@@ -21,7 +21,15 @@ should();
 
 const documentSchema = {
   type: "object",
-  required: ["id", "display_name", "filename", "size", "type", "createdAt", "updatedAt"],
+  required: [
+    "id",
+    "display_name",
+    "filename",
+    "size",
+    "type",
+    "createdAt",
+    "updatedAt",
+  ],
   properties: {
     id: { type: "number" },
     display_name: { type: "string" },
@@ -70,7 +78,10 @@ const getSingleDocument = () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        res.body.should.shallowDeepEqual({ id: 1, display_name: "LT_AL_Elsmore_NIckell.jpeg" });
+        res.body.should.shallowDeepEqual({
+          id: 1,
+          display_name: "LT_AL_Elsmore_NIckell.jpeg",
+        });
         done();
       });
   });

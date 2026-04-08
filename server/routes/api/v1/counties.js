@@ -2,7 +2,7 @@
  * @file Counties API router
  * @author Evan Jelle
  * @exports router an Express router
- * 
+ *
  * @swagger
  * tags:
  *   name: counties
@@ -19,11 +19,11 @@ const router = express.Router();
 
 /**
  * Gets the list of counties
- * 
+ *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
- * 
+ *
  * @swagger
  * /api/v1/counties:
  *   get:
@@ -41,21 +41,21 @@ const router = express.Router();
  *                 $ref: '#/components/schemas/County'
  */
 router.get("/", async function (req, res, next) {
-    try{
-        const counties = await County.findAll({
-            include: [
-                {
-                    model: Community,
-                    as: "communities",
-                    attributes: ["id", "name", "lat", "long"],
-                },
-            ],
-        });
-        res.json(counties);
-    } catch (error) {
-        logger.error(error);
-        res.status(500).end();
-    }
+  try {
+    const counties = await County.findAll({
+      include: [
+        {
+          model: Community,
+          as: "communities",
+          attributes: ["id", "name", "lat", "long"],
+        },
+      ],
+    });
+    res.json(counties);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).end();
+  }
 });
 
 export default router;

@@ -271,7 +271,7 @@ router.delete("/:id", async function (req, res, next) {
     sendSuccess("Community successfully deleted!", community.id, 200, res);
   } catch (error) {
     logger.error(error);
-     res.status(500).end();
+    res.status(500).end();
   }
 });
 

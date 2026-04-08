@@ -292,32 +292,36 @@ router.delete("/:id", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/:id/upload", upload.single("file"), async function (req, res, next) {
-  try {
-    const document = await Document.findByPk(req.params.id);
-    if (!document) {
-      res.status(404).end();
-      return;
+router.post(
+  "/:id/upload",
+  upload.single("file"),
+  async function (req, res, next) {
+    try {
+      const document = await Document.findByPk(req.params.id);
+      if (!document) {
+        res.status(404).end();
+        return;
+      }
+      if (!req.file) {
+        res.status(422).json({ error: "No file uploaded" });
+        return;
+      }
+      await database.transaction(async (t) => {
+        await document.update(
+          {
+            filename: req.file.filename,
+            size: Math.round(req.file.size / 1024),
+            type: req.file.mimetype,
+          },
+          { transaction: t },
+        );
+      });
+      sendSuccess("Document successfully uploaded!", document.id, 201, res);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).end();
     }
-    if (!req.file) {
-      res.status(422).json({ error: "No file uploaded" });
-      return;
-    }
-    await database.transaction(async (t) => {
-      await document.update(
-        {
-          filename: req.file.filename,
-          size: Math.round(req.file.size / 1024),
-          type: req.file.mimetype,
-        },
-        { transaction: t },
-      );
-    });
-    sendSuccess("Document successfully uploaded!", document.id, 201, res);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).end();
-  }
-});
+  },
+);
 
 export default router;

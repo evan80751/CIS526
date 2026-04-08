@@ -21,7 +21,16 @@ should();
 
 const communitySchema = {
   type: "object",
-  required: ["id", "name", "lat", "long", "owner", "county", "createdAt", "updatedAt"],
+  required: [
+    "id",
+    "name",
+    "lat",
+    "long",
+    "owner",
+    "county",
+    "createdAt",
+    "updatedAt",
+  ],
   properties: {
     id: { type: "number" },
     name: { type: "string" },
@@ -77,7 +86,10 @@ const getCommunitiesSchemaMatch = () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        res.body.should.be.jsonSchema({ type: "array", items: communitySchema });
+        res.body.should.be.jsonSchema({
+          type: "array",
+          items: communitySchema,
+        });
         done();
       });
   });
@@ -116,7 +128,11 @@ const getSingleCommunity = () => {
       .end((err, res) => {
         if (err) return done(err);
         res.body.owner.should.shallowDeepEqual({ id: 1, username: "admin" });
-        res.body.county.should.shallowDeepEqual({ id: 2, name: "Anderson", code: "AN" });
+        res.body.county.should.shallowDeepEqual({
+          id: 2,
+          name: "Anderson",
+          code: "AN",
+        });
         done();
       });
   });
@@ -125,7 +141,7 @@ const getSingleCommunity = () => {
     request(app)
       .get("/api/v1/communities/0")
       .expect(404)
-      .end((err, res) => {
+      .end((err) => {
         if (err) return done(err);
         done();
       });
@@ -135,7 +151,7 @@ const getSingleCommunity = () => {
     request(app)
       .get("/api/v1/communities/-1")
       .expect(404)
-      .end((err, res) => {
+      .end((err) => {
         if (err) return done(err);
         done();
       });
@@ -149,7 +165,13 @@ const createCommunity = () => {
   it("should successfully create a new community", (done) => {
     request(app)
       .post("/api/v1/communities")
-      .send({ name: "New Community", lat: 35.1234567, long: -96.1234567, owner: { id: 1 }, county: { id: 1 } })
+      .send({
+        name: "New Community",
+        lat: 35.1234567,
+        long: -96.1234567,
+        owner: { id: 1 },
+        county: { id: 1 },
+      })
       .expect(201)
       .end((err, res) => {
         if (err) return done(err);
@@ -162,7 +184,12 @@ const createCommunity = () => {
   it("should fail when missing required field 'name'", (done) => {
     request(app)
       .post("/api/v1/communities")
-      .send({ lat: 35.1234567, long: -96.1234567, owner: { id: 1 }, county: { id: 1 } })
+      .send({
+        lat: 35.1234567,
+        long: -96.1234567,
+        owner: { id: 1 },
+        county: { id: 1 },
+      })
       .expect(422)
       .end((err, res) => {
         if (err) return done(err);
@@ -179,7 +206,13 @@ const updateCommunity = () => {
   it("should successfully update community ID '1'", (done) => {
     request(app)
       .put("/api/v1/communities/1")
-      .send({ name: "Updated Community", lat: 35.1234567, long: -96.1234567, owner: { id: 1 }, county: { id: 1 } })
+      .send({
+        name: "Updated Community",
+        lat: 35.1234567,
+        long: -96.1234567,
+        owner: { id: 1 },
+        county: { id: 1 },
+      })
       .expect(201)
       .end((err, res) => {
         if (err) return done(err);
@@ -192,9 +225,15 @@ const updateCommunity = () => {
   it("should return 404 when updating community with id '0'", (done) => {
     request(app)
       .put("/api/v1/communities/0")
-      .send({ name: "Updated Community", lat: 35.1234567, long: -96.1234567, owner: { id: 1 }, county: { id: 1 } })
+      .send({
+        name: "Updated Community",
+        lat: 35.1234567,
+        long: -96.1234567,
+        owner: { id: 1 },
+        county: { id: 1 },
+      })
       .expect(404)
-      .end((err, res) => {
+      .end((err) => {
         if (err) return done(err);
         done();
       });
@@ -220,7 +259,7 @@ const deleteCommunity = () => {
     request(app)
       .delete("/api/v1/communities/0")
       .expect(404)
-      .end((err, res) => {
+      .end((err) => {
         if (err) return done(err);
         done();
       });

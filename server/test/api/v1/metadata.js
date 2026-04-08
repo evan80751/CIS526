@@ -21,7 +21,22 @@ should();
 
 const metadataSchema = {
   type: "object",
-  required: ["id", "title", "author", "publisher", "date", "abstract", "citation", "copyright_id", "keywords", "owner", "documents", "communities", "createdAt", "updatedAt"],
+  required: [
+    "id",
+    "title",
+    "author",
+    "publisher",
+    "date",
+    "abstract",
+    "citation",
+    "copyright_id",
+    "keywords",
+    "owner",
+    "documents",
+    "communities",
+    "createdAt",
+    "updatedAt",
+  ],
   properties: {
     id: { type: "number" },
     title: { type: "string" },
@@ -131,7 +146,10 @@ const getSingleMetadata = () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        res.body.should.shallowDeepEqual({ id: 1, title: "Elsmore, Allen County " });
+        res.body.should.shallowDeepEqual({
+          id: 1,
+          title: "Elsmore, Allen County ",
+        });
         done();
       });
   });

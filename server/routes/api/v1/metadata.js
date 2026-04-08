@@ -11,7 +11,13 @@
 // Import libraries
 import express from "express";
 // Import models
-import { Metadata, User, Document, Community, County } from "../../../models/models.js";
+import {
+  Metadata,
+  User,
+  Document,
+  Community,
+  County,
+} from "../../../models/models.js";
 // Import configs
 import logger from "../../../configs/logger.js";
 import database from "../../../configs/database.js";
