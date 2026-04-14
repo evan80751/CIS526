@@ -21,30 +21,39 @@ import logger from "./logger.js";
  * @param {function} next the next middleware function
  */
 const authenticateUser = function (username, next) {
-  // Find user with the username
-  User.findOne({
-    attributes: ["id", "username"],
-    include: {
-      model: Role,
-      as: "roles",
-      attributes: ["id", "role"],
-      through: {
-        attributes: [],
-      },
-    },
-    where: { username: username },
-  }).then((user) => {
-    // User not found
-    if (user === null) {
-      logger.debug("Login failed for user: " + username);
-      return next(null, false);
-    }
-    // User authenticated
-    logger.debug("Login succeeded for user: " + user.username);
-    // Convert Sequelize object to plain JavaScript object
-    user = JSON.parse(JSON.stringify(user));
-    return next(null, user);
-  });
+    //Find or create user with the username
+    User.findOrCreate({
+        where: { username: username },
+        defaults: { username: username },
+    }).then(([user, created]) => {
+        if (created) {
+            logger.debug("Created new user: " + username);
+        }
+        // Reload user with roles
+        User.findOne({
+            attributes: ["id", "username"],
+            include: {
+                model: Role,
+                as: "roles",
+                attributes: ["id", "role"],
+                through: {
+                    attributes: [],
+                },
+            },
+            where: { username: username },
+        }).then((user) => {
+            //User not found
+            if (user === null) {
+                logger.debug("Login failed for user: " + username);
+                return next(null, false);
+            }
+            // User authenticated
+            logger.debug("Login succeeded for user: " + user.username)
+            // Convert Sequelize object to plain JavaScript object
+            user = JSON.parse(JSON.stringify(user));
+            return next(null, user);
+        });
+    });
 };
 
 // Bypass Authentication via Token

@@ -34,6 +34,7 @@
 import express from "express";
 import passport from "passport";
 import jsonwebtoken from "jsonwebtoken";
+import logger from "../configs/logger.js";
 
 // Import configurations
 import "../configs/auth.js";
@@ -127,6 +128,38 @@ router.get("/token", function (req, res, next) {
         // Send unauthorized respons
         res.status(401).end();
     }
+});
+
+/**
+ * Logout current user
+ * 
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * 
+ * @swagger
+ * /auth/logout:
+ *   get:
+ *     summary: logout current user
+ *     description: logout current use and end session
+ *     tags: [auth]
+ *     responses:
+ *       200:
+ *         description: success
+ */
+router.get("/logout", function (req, res, next) {
+    res.clearCookie(process.env.SESSION_NAME || "connect.sid");
+    req.logout(function (err) {
+        if (err) {
+            logger.error(err);
+        }
+        req.session.destroy(function (err) {
+            if (err) {
+                logger.error(err);
+            }
+            res.redirect("/");
+        });
+    });
 });
 
 export default router;
