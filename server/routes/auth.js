@@ -94,7 +94,7 @@ router.get("/bypass", passport.authenticate("token", { session: false }), authSu
  *       200:
  *         description: success
  */
-router.get("/cas", function (req, res, next) {});
+router.get("/cas", passport.authenticate("cas", { session: true }), authSuccess);
 
 /**
  * Request JWT based on previous authentication

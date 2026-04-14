@@ -12,6 +12,7 @@
     "coverage": "c8 npm test"
   },
   "dependencies": {
+    "@coursetable/passport-cas": "^0.1.4",
     "@dotenvx/dotenvx": "^1.57.2",
     "compression": "^1.8.1",
     "connect-session-sequelize": "^8.0.6",

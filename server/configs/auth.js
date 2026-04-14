@@ -6,6 +6,7 @@
 // Import libraries
 import passport from "passport";
 import { UniqueTokenStrategy } from "passport-unique-token";
+import { Strategy as CasStrategy } from "@coursetable/passport-cas";
 
 // Import models
 import { User, Role } from "../models/models.js";
@@ -56,6 +57,28 @@ passport.use(
       return next(null, false);
     }
   }),
+);
+
+// CAS Authentication
+passport.use(
+    new CasStrategy(
+        {
+            version: "CAS2.0",
+            ssoBaseURL: process.env.CAS_URL,
+            serverBaseURL: process.env.CAS_SERVICE_URL + "/auth/cas",
+        },
+        (profile, next) => {
+            if (profile.user) {
+                return authenticateUser(profile.user, next);
+            } else {
+                logger.warn(
+                    "CAS authentication succeeded but no user returned: " +
+                        JSON.stringify(profile),
+                );
+                return next(null, false);
+            }
+        },
+    ),
 );
 
 // Default functions to serialize and deserialize a session
