@@ -2,7 +2,6 @@
  * @file /api/v1/roles Route Tests
  * @author Evan Jelle
  */
-
 // Load Libraries
 import request from "supertest";
 import { use, should } from "chai";
@@ -10,26 +9,25 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import chaiJsonSchemaAjv from "chai-json-schema-ajv";
 import chaiShallowDeepEqual from "chai-shallow-deep-equal";
-
+import { login } from "../../helpers.js";
 // Import Express application
 import app from "../../../app.js";
-
 // Configure Chai and AJV
 const ajv = new Ajv();
 addFormats(ajv);
 use(chaiJsonSchemaAjv.create({ ajv, verbose: true }));
 use(chaiShallowDeepEqual);
-
 // Modify Object.prototype for BDD style assertions
 should();
 
 /**
  * Get all roles
  */
-const getAllRoles = () => {
+const getAllRoles = (state) => {
   it("should list all roles", (done) => {
     request(app)
       .get("/api/v1/roles")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -43,7 +41,7 @@ const getAllRoles = () => {
 /**
  * Check JSON Schema of Roles
  */
-const getRolesSchemaMatch = () => {
+const getRolesSchemaMatch = (state) => {
   it("all roles should match schema", (done) => {
     const schema = {
       type: "array",
@@ -61,6 +59,7 @@ const getRolesSchemaMatch = () => {
     };
     request(app)
       .get("/api/v1/roles")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -73,10 +72,11 @@ const getRolesSchemaMatch = () => {
 /**
  * Check Role exists in list
  */
-const findRole = (role) => {
+const findRole = (state, role) => {
   it("should contain '" + role.role + "' role", (done) => {
     request(app)
       .get("/api/v1/roles")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -103,11 +103,14 @@ const roles = [
  */
 describe("/api/v1/roles", () => {
   describe("GET /", () => {
-    getAllRoles();
-    getRolesSchemaMatch();
-
+    let state = {};
+    beforeEach(async () => {
+      state.token = await login("admin");
+    });
+    getAllRoles(state);
+    getRolesSchemaMatch(state);
     roles.forEach((r) => {
-      findRole(r);
+      findRole(state, r);
     });
   });
 });

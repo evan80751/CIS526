@@ -2,7 +2,6 @@
  * @file /api/v1/users Route Tests
  * @author Evan Jelle
  */
-
 // Load Libraries
 import request from "supertest";
 import { use, should, expect } from "chai";
@@ -10,19 +9,17 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import chaiJsonSchemaAjv from "chai-json-schema-ajv";
 import chaiShallowDeepEqual from "chai-shallow-deep-equal";
-
 // Import Express application
 import app from "../../../app.js";
-
+// Import helpers
+import { login } from "../../helpers.js";
 // Configure Chai and AJV
 const ajv = new Ajv();
 addFormats(ajv);
 use(chaiJsonSchemaAjv.create({ ajv, verbose: true }));
 use(chaiShallowDeepEqual);
-
 // Modify Object.prototype for BDD style assertions
 should();
-
 // User schema for validation
 const userSchema = {
   type: "object",
@@ -49,14 +46,14 @@ const userSchema = {
   },
   additionalProperties: false,
 };
-
 /**
  * Get all users
  */
-const getAllUsers = () => {
+const getAllUsers = (state) => {
   it("should list all users", (done) => {
     request(app)
       .get("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -66,11 +63,10 @@ const getAllUsers = () => {
       });
   });
 };
-
 /**
  * Check JSON Schema of Users
  */
-const getUsersSchemaMatch = () => {
+const getUsersSchemaMatch = (state) => {
   it("all users should match schema", (done) => {
     const schema = {
       type: "array",
@@ -78,6 +74,7 @@ const getUsersSchemaMatch = () => {
     };
     request(app)
       .get("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -86,14 +83,14 @@ const getUsersSchemaMatch = () => {
       });
   });
 };
-
 /**
  * Check User exists in list
  */
-const findUser = (user) => {
+const findUser = (state, user) => {
   it("should contain '" + user.username + "' user", (done) => {
     request(app)
       .get("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -103,14 +100,14 @@ const findUser = (user) => {
       });
   });
 };
-
 /**
  * Check that User has correct number of roles
  */
-const findUserCountRoles = (username, count) => {
+const findUserCountRoles = (state, username, count) => {
   it("user '" + username + "' should have " + count + " roles", (done) => {
     request(app)
       .get("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -121,14 +118,14 @@ const findUserCountRoles = (username, count) => {
       });
   });
 };
-
 /**
  * Get single user
  */
-const getSingleUser = (user) => {
+const getSingleUser = (state, user) => {
   it("should get user '" + user.username + "'", (done) => {
     request(app)
       .get("/api/v1/users/" + user.id)
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -138,14 +135,14 @@ const getSingleUser = (user) => {
       });
   });
 };
-
 /**
  * Get single user check schema
  */
-const getSingleUserSchemaMatch = (user) => {
+const getSingleUserSchemaMatch = (state, user) => {
   it("user '" + user.username + "' should match schema", (done) => {
     request(app)
       .get("/api/v1/users/" + user.id)
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -154,16 +151,16 @@ const getSingleUserSchemaMatch = (user) => {
       });
   });
 };
-
 /**
  * Tries to get a user using an invalid id
  */
-const getSingleUserBadId = (invalidId) => {
+const getSingleUserBadId = (state, invalidId) => {
   it(
     "should return 404 when requesting user with id '" + invalidId + "'",
     (done) => {
       request(app)
         .get("/api/v1/users/" + invalidId)
+        .set("Authorization", `Bearer ${state.token}`)
         .expect(404)
         .end((err) => {
           if (err) return done(err);
@@ -172,7 +169,6 @@ const getSingleUserBadId = (invalidId) => {
     },
   );
 };
-
 // New user structure for create/update tests
 const new_user = {
   username: "test_user",
@@ -182,19 +178,18 @@ const new_user = {
     },
   ],
 };
-
 // New user structure without roles
 const new_user_no_roles = {
   username: "test_user",
 };
-
 /**
  * Create a user successfully
  */
-const createUser = () => {
+const createUser = (state) => {
   it("should successfully create a new user", (done) => {
     request(app)
       .post("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .send(new_user)
       .expect(201)
       .end((err, res) => {
@@ -206,14 +201,14 @@ const createUser = () => {
       });
   });
 };
-
 /**
  * Fails to create user with a duplicate username
  */
-const createUserFailsOnDuplicateUsername = (user) => {
+const createUserFailsOnDuplicateUsername = (state, user) => {
   it("should fail on duplicate username '" + user.username + "'", (done) => {
     request(app)
       .post("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .send(user)
       .expect(422)
       .end((err, res) => {
@@ -229,16 +224,16 @@ const createUserFailsOnDuplicateUsername = (user) => {
       });
   });
 };
-
 /**
  * Fails to create user with bad role ID
  */
-const createUserFailsOnInvalidRole = (user, role_id) => {
+const createUserFailsOnInvalidRole = (state, user, role_id) => {
   it("should fail when invalid role id '" + role_id + "' is used", (done) => {
     const new_user_bad_role = { ...user };
     new_user_bad_role.roles = [{ id: role_id }];
     request(app)
       .post("/api/v1/users")
+      .set("Authorization", `Bearer ${state.token}`)
       .send(new_user_bad_role)
       .expect(422)
       .end((err, res) => {
@@ -249,11 +244,10 @@ const createUserFailsOnInvalidRole = (user, role_id) => {
       });
   });
 };
-
 /**
  * Update a user successfully
  */
-const updateUser = (id, user) => {
+const updateUser = (state, id, user) => {
   it(
     "should successfully update user ID '" +
       id +
@@ -263,6 +257,7 @@ const updateUser = (id, user) => {
     (done) => {
       request(app)
         .put("/api/v1/users/" + id)
+        .set("Authorization", `Bearer ${state.token}`)
         .send(user)
         .expect(201)
         .end((err, res) => {
@@ -273,6 +268,7 @@ const updateUser = (id, user) => {
           expect(res.body.id).equal(id);
           request(app)
             .get("/api/v1/users")
+            .set("Authorization", `Bearer ${state.token}`)
             .expect(200)
             .end((err, res) => {
               if (err) return done(err);
@@ -284,14 +280,14 @@ const updateUser = (id, user) => {
     },
   );
 };
-
 /**
  * Update a user and roles successfully
  */
-const updateUserAndRoles = (id, user) => {
+const updateUserAndRoles = (state, id, user) => {
   it("should successfully update user ID '" + id + "' roles", (done) => {
     request(app)
       .put("/api/v1/users/" + id)
+      .set("Authorization", `Bearer ${state.token}`)
       .send(user)
       .expect(201)
       .end((err, res) => {
@@ -304,14 +300,14 @@ const updateUserAndRoles = (id, user) => {
       });
   });
 };
-
 /**
  * Fails to update user with a duplicate username
  */
-const updateUserFailsOnDuplicateUsername = (id, user) => {
+const updateUserFailsOnDuplicateUsername = (state, id, user) => {
   it("should fail on duplicate username '" + user.username + "'", (done) => {
     request(app)
       .put("/api/v1/users/" + id)
+      .set("Authorization", `Bearer ${state.token}`)
       .send(user)
       .expect(422)
       .end((err, res) => {
@@ -327,17 +323,17 @@ const updateUserFailsOnDuplicateUsername = (id, user) => {
       });
   });
 };
-
 /**
  * Fails to update user with bad role ID
  */
-const updateUserFailsOnInvalidRole = (id, user, role_id) => {
+const updateUserFailsOnInvalidRole = (state, id, user, role_id) => {
   it("should fail when invalid role id '" + role_id + "' is used", (done) => {
     const updated_user = { ...user };
     updated_user.roles = [...user.roles];
     updated_user.roles.push({ id: role_id });
     request(app)
       .put("/api/v1/users/" + id)
+      .set("Authorization", `Bearer ${state.token}`)
       .send(updated_user)
       .expect(422)
       .end((err, res) => {
@@ -346,6 +342,7 @@ const updateUserFailsOnInvalidRole = (id, user, role_id) => {
         res.body.should.have.property("error");
         request(app)
           .get("/api/v1/users")
+          .set("Authorization", `Bearer ${state.token}`)
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
@@ -357,14 +354,14 @@ const updateUserFailsOnInvalidRole = (id, user, role_id) => {
       });
   });
 };
-
 /**
  * Delete a user successfully
  */
-const deleteUser = (id) => {
+const deleteUser = (state, id) => {
   it("should successfully delete user ID '" + id, (done) => {
     request(app)
       .delete("/api/v1/users/" + id)
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(200)
       .end((err) => {
         if (err) return done(err);
@@ -372,14 +369,14 @@ const deleteUser = (id) => {
       });
   });
 };
-
 /**
  * Fail to delete a missing user
  */
-const deleteUserFailsInvalidId = (id) => {
+const deleteUserFailsInvalidId = (state, id) => {
   it("should fail to delete invalid user ID '" + id, (done) => {
     request(app)
       .delete("/api/v1/users/" + id)
+      .set("Authorization", `Bearer ${state.token}`)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -387,7 +384,6 @@ const deleteUserFailsInvalidId = (id) => {
       });
   });
 };
-
 // List of all expected users in the application
 const users = [
   { id: 1, username: "admin" },
@@ -395,73 +391,67 @@ const users = [
   { id: 3, username: "manager" },
   { id: 4, username: "user" },
 ];
-
 // Update user structure with only roles
 const update_user_only_roles = {
   roles: [{ id: 6 }, { id: 7 }],
 };
-
 // Update user structure with duplicate username
 const update_user_duplicate_username = {
   username: "admin",
 };
-
 /**
  * Test /api/v1/users route
  */
 describe("/api/v1/users", () => {
-  describe("GET /", () => {
-    getAllUsers();
-    getUsersSchemaMatch();
-
-    users.forEach((u) => {
-      findUser(u);
-    });
-
-    findUserCountRoles("admin", 3);
-    findUserCountRoles("contributor", 2);
-    findUserCountRoles("manager", 2);
-    findUserCountRoles("user", 2);
+  let state = {};
+  beforeEach(async () => {
+    state.token = await login("admin");
   });
-
+  describe("GET /", () => {
+    getAllUsers(state);
+    getUsersSchemaMatch(state);
+    users.forEach((u) => {
+      findUser(state, u);
+    });
+    findUserCountRoles(state, "admin", 3);
+    findUserCountRoles(state, "contributor", 2);
+    findUserCountRoles(state, "manager", 2);
+    findUserCountRoles(state, "user", 2);
+  });
   describe("GET /{id}", () => {
     users.forEach((u) => {
-      getSingleUser(u);
-      getSingleUserSchemaMatch(u);
+      getSingleUser(state, u);
+      getSingleUserSchemaMatch(state, u);
     });
-
-    getSingleUserBadId(0);
-    getSingleUserBadId("test");
-    getSingleUserBadId(-1);
-    getSingleUserBadId(5);
+    getSingleUserBadId(state, 0);
+    getSingleUserBadId(state, "test");
+    getSingleUserBadId(state, -1);
+    getSingleUserBadId(state, 5);
   });
-
   describe("POST /", () => {
-    createUser();
-    createUserFailsOnDuplicateUsername({ username: "admin" });
-    createUserFailsOnInvalidRole(new_user, 0);
-    createUserFailsOnInvalidRole(new_user, -1);
-    createUserFailsOnInvalidRole(new_user, 8);
-    createUserFailsOnInvalidRole(new_user, "test");
+    createUser(state);
+    createUserFailsOnDuplicateUsername(state, { username: "admin" });
+    createUserFailsOnInvalidRole(state, new_user, 0);
+    createUserFailsOnInvalidRole(state, new_user, -1);
+    createUserFailsOnInvalidRole(state, new_user, 8);
+    createUserFailsOnInvalidRole(state, new_user, "test");
   });
-
   describe("PUT /{id}", () => {
-    updateUser(3, new_user);
-    updateUserAndRoles(3, new_user);
-    updateUserAndRoles(2, new_user_no_roles);
-    updateUserAndRoles(1, update_user_only_roles);
-    updateUserFailsOnDuplicateUsername(2, update_user_duplicate_username);
-    updateUserFailsOnInvalidRole(4, new_user, 0);
-    updateUserFailsOnInvalidRole(4, new_user, -1);
-    updateUserFailsOnInvalidRole(4, new_user, 8);
-    updateUserFailsOnInvalidRole(4, new_user, "test");
+    updateUser(state, 3, new_user);
+    updateUserAndRoles(state, 3, new_user);
+    updateUserAndRoles(state, 2, new_user_no_roles);
+    updateUserAndRoles(state, 1, update_user_only_roles);
+    updateUserFailsOnDuplicateUsername(state, 2, update_user_duplicate_username);
+    updateUserFailsOnInvalidRole(state, 4, new_user, 0);
+    updateUserFailsOnInvalidRole(state, 4, new_user, -1);
+    updateUserFailsOnInvalidRole(state, 4, new_user, 8);
+    updateUserFailsOnInvalidRole(state, 4, new_user, "test");
   });
-
   describe("DELETE /{id}", () => {
-    deleteUser(4);
-    deleteUserFailsInvalidId(0);
-    deleteUserFailsInvalidId(-1);
-    deleteUserFailsInvalidId(5);
-    deleteUserFailsInvalidId("test");
+    deleteUser(state, 4);
+    deleteUserFailsInvalidId(state, 0);
+    deleteUserFailsInvalidId(state, -1);
+    deleteUserFailsInvalidId(state, 5);
+    deleteUserFailsInvalidId(state, "test");
   });
 });
