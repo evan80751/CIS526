@@ -50,7 +50,7 @@ const router = express.Router();
  * @param {Function} next - Express next middleware function
  */
 const authSuccess = function (req, res, next) {
-  res.json(req.user);
+  res.redirect("/");
 };
 
 /**

@@ -20,7 +20,7 @@ export const login = async (user) => {
   const agent = request.agent(app);
   await agent
     .get("/auth/bypass?token=" + user)
-    .expect(200);
+    .expect(302)
   const res = await agent.get("/auth/token").expect(200);
   return res.body.token;
 };

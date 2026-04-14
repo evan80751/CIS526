@@ -22,7 +22,7 @@ should();
 const users = ["admin", "contributor", "manager", "user"];
 
 // Regular expression for valid session cookie
-const regex_valid = "connect\\.sid=s%3A[\\w-]+\\.[\\w%+/-]+=*;";
+const regex_valid = (process.env.SESSION_NAME || "connect\\.sid") + "=s%3A[\\w-]+\\.[\\w%+/-]+=*;";
 
 /**
  * Test bypass authentication
@@ -32,7 +32,8 @@ const bypassAuth = (user) => {
     const re = new RegExp(regex_valid, "gm");
     request(app)
       .get("/auth/bypass?token=" + user)
-      .expect(200)
+      .expect(302)
+      .expect("Location", "/")
       .expect("set-cookie", re)
       .end((err) => {
         if (err) return done(err);
@@ -49,7 +50,8 @@ const bypassAuthCreatesUser = (user) => {
     const re = new RegExp(regex_valid, "gm");
     request(app)
       .get("/auth/bypass?token=" + user)
-      .expect(200)
+      .expect(302)
+      .expect("Location", "/")
       .expect("set-cookie", re)
       .end((err) => {
         if (err) return done(err);
@@ -74,7 +76,7 @@ const userCanRequestToken = (user) => {
     const agent = request.agent(app);
     agent
       .get("/auth/bypass?token=" + user)
-      .expect(200)
+      .expect(302)
       .end((err) => {
         if (err) return done(err);
         agent
@@ -96,11 +98,10 @@ const userCanRequestToken = (user) => {
 const logoutDestroysCookie = (user) => {
   it("should destroy cookie on logout", (done) => {
     const re = new RegExp(regex_valid, "gm");
-    const re_destroy = "connect\\.sid=;";
-    const agent = request.agent(app);
+    const re_destroy = (process.env.SESSION_NAME || "connect.sid") + "=;";    const agent = request.agent(app);
     agent
       .get("/auth/bypass?token=" + user)
-      .expect(200)
+      .expect(302)
       .expect("set-cookie", re)
       .end((err) => {
         if (err) return done(err);
