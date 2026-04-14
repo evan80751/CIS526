@@ -33,6 +33,7 @@
 // Import libraries
 import express from "express";
 import passport from "passport";
+import jsonwebtoken from "jsonwebtoken";
 
 // Import configurations
 import "../configs/auth.js";
@@ -113,6 +114,19 @@ router.get("/cas", passport.authenticate("cas", { session: true }), authSuccess)
  *       200:
  *         $ref: '#/components/responses/AuthToken'
  */
-router.get("/token", function (req, res, next) {});
+router.get("/token", function (req, res, next) {
+    // If user is logged in
+    if (req.user) {
+        const token = jsonwebtoken.sign(req.user, process.env.JWT_SECRET_KEY, {
+            expiresIn: "6h",
+        });
+        res.json({
+            token: token,
+        });
+    } else {
+        // Send unauthorized respons
+        res.status(401).end();
+    }
+});
 
 export default router;
