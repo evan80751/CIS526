@@ -11,6 +11,7 @@ import swaggerUI from "swagger-ui-express";
 import openapi from "./configs/openapi.js";
 import logger from "./configs/logger.js";
 import apiRouter from "./routes/api.js";
+import authRouter from "./routes/auth.js";
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(import.meta.dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/api", apiRouter);
+app.use("/auth", authRouter);
 
 if (process.env.OPENAPI_VISIBLE === "true") {
   logger.warn("OpenAPI documentation visible!");
