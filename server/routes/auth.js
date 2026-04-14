@@ -77,8 +77,7 @@ const authSuccess = function (req, res, next) {
  *       200:
  *         description: success
  */
-router.get("/bypass", passport.authenticate("token", { session: false }), authSuccess);
-
+router.get("/bypass", passport.authenticate("token", { session: true }), authSuccess);
 /**
  * CAS Authentication
  *

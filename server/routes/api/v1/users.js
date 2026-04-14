@@ -21,9 +21,11 @@ import database from "../../../configs/database.js";
 import sendSuccess from "../../../utilities/send-success.js";
 import { ValidationError } from "sequelize";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
+import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 
 // Create Express router
 const router = express.Router();
+router.use(roleBasedAuth("manage_users"));
 
 /**
  * Gets the list of users

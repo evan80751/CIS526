@@ -16,6 +16,7 @@ import logger from "./configs/logger.js";
 import apiRouter from "./routes/api.js";
 import authRouter from "./routes/auth.js";
 import passport from "passport";
+import tokenMiddleware from "./middlewares/token.js";
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(tokenMiddleware);
 app.use(express.static(path.join(import.meta.dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
