@@ -26,6 +26,7 @@ import sendSuccess from "../../../utilities/send-success.js";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 // Import Sequelize
 import { ValidationError } from "sequelize";
+import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 // Create Express router
 const router = express.Router();
 
@@ -76,7 +77,7 @@ const metadataIncludes = [
  *               items:
  *                 $ref: '#/components/schemas/Metadata'
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth(["view_documents", "manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const metadata = await Metadata.findAll({ include: metadataIncludes });
     res.json(metadata);
@@ -114,7 +115,7 @@ router.get("/", async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/Metadata'
  */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", roleBasedAuth(["view_documents", "manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id, {
       include: metadataIncludes,
@@ -155,7 +156,7 @@ router.get("/:id", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/", async function (req, res, next) {
+router.post("/", roleBasedAuth(["manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const result = await database.transaction(async (t) => {
       const metadata = await Metadata.create(
@@ -168,7 +169,7 @@ router.post("/", async function (req, res, next) {
           citation: req.body.citation,
           copyright_id: req.body.copyright_id,
           keywords: req.body.keywords,
-          owner_user_id: req.body.owner.id,
+          owner_user_id: req.user.id,
         },
         { transaction: t },
       );
@@ -217,7 +218,7 @@ router.post("/", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.put("/:id", async function (req, res, next) {
+router.put("/:id", roleBasedAuth("manage_documents"), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id);
     if (!metadata) {
@@ -235,7 +236,6 @@ router.put("/:id", async function (req, res, next) {
           citation: req.body.citation,
           copyright_id: req.body.copyright_id,
           keywords: req.body.keywords,
-          owner_user_id: req.body.owner.id,
         },
         { transaction: t },
       );
@@ -274,7 +274,7 @@ router.put("/:id", async function (req, res, next) {
  *       200:
  *         $ref: '#/components/responses/Success'
  */
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", roleBasedAuth("manage_documents"), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id);
     if (!metadata) {
@@ -325,7 +325,7 @@ router.delete("/:id", async function (req, res, next) {
  *       201:
  *         $ref: '#/components/responses/Success'
  */
-router.post("/:id/add_document", async function (req, res, next) {
+router.post("/:id/add_document", roleBasedAuth(["manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id);
     if (!metadata) {
@@ -381,7 +381,7 @@ router.post("/:id/add_document", async function (req, res, next) {
  *       201:
  *         $ref: '#/components/responses/Success'
  */
-router.post("/:id/remove_document", async function (req, res, next) {
+router.post("/:id/remove_document", roleBasedAuth(["manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id);
     if (!metadata) {
@@ -437,7 +437,7 @@ router.post("/:id/remove_document", async function (req, res, next) {
  *       201:
  *         $ref: '#/components/responses/Success'
  */
-router.post("/:id/add_community", async function (req, res, next) {
+router.post("/:id/add_community", roleBasedAuth(["manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id);
     if (!metadata) {
@@ -493,7 +493,7 @@ router.post("/:id/add_community", async function (req, res, next) {
  *       201:
  *         $ref: '#/components/responses/Success'
  */
-router.post("/:id/remove_community", async function (req, res, next) {
+router.post("/:id/remove_community", roleBasedAuth(["manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const metadata = await Metadata.findByPk(req.params.id);
     if (!metadata) {

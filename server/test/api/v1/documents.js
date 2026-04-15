@@ -11,6 +11,7 @@ import chaiJsonSchemaAjv from "chai-json-schema-ajv";
 import chaiShallowDeepEqual from "chai-shallow-deep-equal";
 // Import Express application
 import app from "../../../app.js";
+import { login, all_roles, testRoleBasedAuth } from "../../helpers.js";
 // Configure Chai and AJV
 const ajv = new Ajv();
 addFormats(ajv);
@@ -18,6 +19,8 @@ use(chaiJsonSchemaAjv.create({ ajv, verbose: true }));
 use(chaiShallowDeepEqual);
 // Modify Object.prototype for BDD style assertions
 should();
+
+let token;
 
 const documentSchema = {
   type: "object",
@@ -48,6 +51,7 @@ const getAllDocuments = () => {
   it("should list all documents", (done) => {
     request(app)
       .get("/api/v1/documents")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -59,6 +63,7 @@ const getAllDocuments = () => {
   it("all documents should match schema", (done) => {
     request(app)
       .get("/api/v1/documents")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -75,6 +80,7 @@ const getSingleDocument = () => {
   it("should get document with id '1'", (done) => {
     request(app)
       .get("/api/v1/documents/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -89,6 +95,7 @@ const getSingleDocument = () => {
   it("document '1' should match schema", (done) => {
     request(app)
       .get("/api/v1/documents/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -100,6 +107,7 @@ const getSingleDocument = () => {
   it("should return 404 when requesting document with id '0'", (done) => {
     request(app)
       .get("/api/v1/documents/0")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -110,6 +118,7 @@ const getSingleDocument = () => {
   it("should return 404 when requesting document with id '-1'", (done) => {
     request(app)
       .get("/api/v1/documents/-1")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -125,6 +134,7 @@ const createDocument = () => {
   it("should successfully create a new document", (done) => {
     request(app)
       .post("/api/v1/documents")
+      .set("Authorization", "Bearer " + token)
       .send({ display_name: "New_Document.jpg" })
       .expect(201)
       .end((err, res) => {
@@ -138,6 +148,7 @@ const createDocument = () => {
   it("should fail when missing required field 'display_name'", (done) => {
     request(app)
       .post("/api/v1/documents")
+      .set("Authorization", "Bearer " + token)
       .send({})
       .expect(422)
       .end((err, res) => {
@@ -155,6 +166,7 @@ const updateDocument = () => {
   it("should successfully update document ID '1'", (done) => {
     request(app)
       .put("/api/v1/documents/1")
+      .set("Authorization", "Bearer " + token)
       .send({ display_name: "Updated_Document.jpg" })
       .expect(201)
       .end((err, res) => {
@@ -168,6 +180,7 @@ const updateDocument = () => {
   it("should return 404 when updating document with id '0'", (done) => {
     request(app)
       .put("/api/v1/documents/0")
+      .set("Authorization", "Bearer " + token)
       .send({ display_name: "Updated_Document.jpg" })
       .expect(404)
       .end((err) => {
@@ -184,6 +197,7 @@ const deleteDocument = () => {
   it("should successfully delete document ID '2'", (done) => {
     request(app)
       .delete("/api/v1/documents/2")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -195,6 +209,7 @@ const deleteDocument = () => {
   it("should return 404 when deleting document with id '0'", (done) => {
     request(app)
       .delete("/api/v1/documents/0")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -210,6 +225,7 @@ const uploadDocument = () => {
   it("should successfully upload a file to document ID '1'", (done) => {
     request(app)
       .post("/api/v1/documents/1/upload")
+      .set("Authorization", "Bearer " + token)
       .attach("file", Buffer.from("test file contents"), "test.jpg")
       .expect(201)
       .end((err, res) => {
@@ -223,6 +239,7 @@ const uploadDocument = () => {
   it("should return 404 when uploading to document with id '0'", (done) => {
     request(app)
       .post("/api/v1/documents/0/upload")
+      .set("Authorization", "Bearer " + token)
       .attach("file", Buffer.from("test file contents"), "test.jpg")
       .expect(404)
       .end((err) => {
@@ -234,6 +251,7 @@ const uploadDocument = () => {
   it("should return 422 when no file is provided", (done) => {
     request(app)
       .post("/api/v1/documents/1/upload")
+      .set("Authorization", "Bearer " + token)
       .expect(422)
       .end((err, res) => {
         if (err) return done(err);
@@ -247,6 +265,9 @@ const uploadDocument = () => {
  * Test /api/v1/documents route
  */
 describe("/api/v1/documents", () => {
+  beforeEach(async () => {
+    token = await login("admin");
+  });
   describe("GET /", () => {
     getAllDocuments();
   });
@@ -264,5 +285,29 @@ describe("/api/v1/documents", () => {
   });
   describe("POST /{id}/upload", () => {
     uploadDocument();
+  });
+describe("GET / - role-based auth", () => {
+    const allowed_roles = ["view_documents", "manage_documents", "add_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/documents", "get", r, allowed_roles.includes(r));
+    });
+  });
+  describe("POST / - role-based auth", () => {
+    const allowed_roles = ["manage_documents", "add_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/documents", "post", r, allowed_roles.includes(r));
+    });
+  });
+  describe("PUT /{id} - role-based auth", () => {
+    const allowed_roles = ["manage_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/documents/1", "put", r, allowed_roles.includes(r));
+    });
+  });
+  describe("DELETE /{id} - role-based auth", () => {
+    const allowed_roles = ["manage_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/documents/1", "delete", r, allowed_roles.includes(r));
+    });
   });
 });

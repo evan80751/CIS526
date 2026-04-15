@@ -20,6 +20,7 @@ import sendSuccess from "../../../utilities/send-success.js";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 // Import Sequelize
 import { ValidationError } from "sequelize";
+import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 // Create Express router
 const router = express.Router();
 
@@ -46,8 +47,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Community'
  */
-router.get("/", async function (req, res, next) {
-  try {
+router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {  try {
     const communities = await Community.findAll({
       include: [
         {
@@ -97,7 +97,7 @@ router.get("/", async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/Community'
  */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {
   try {
     const community = await Community.findByPk(req.params.id, {
       include: [
@@ -149,15 +149,14 @@ router.get("/:id", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/", async function (req, res, next) {
-  try {
+router.post("/", roleBasedAuth(["manage_communities", "add_communities"]), async function (req, res, next) {  try {
     const result = await database.transaction(async (t) => {
       const community = await Community.create(
         {
           name: req.body.name,
           lat: req.body.lat,
           long: req.body.long,
-          owner_user_id: req.body.owner.id,
+          owner_user_id: req.user.id,
           county_id: req.body.county.id,
         },
         { transaction: t },
@@ -207,8 +206,7 @@ router.post("/", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.put("/:id", async function (req, res, next) {
-  try {
+router.put("/:id", roleBasedAuth("manage_communities"), async function (req, res, next) {  try {
     const community = await Community.findByPk(req.params.id);
     if (!community) {
       res.status(404).end();
@@ -220,7 +218,6 @@ router.put("/:id", async function (req, res, next) {
           name: req.body.name,
           lat: req.body.lat,
           long: req.body.long,
-          owner_user_id: req.body.owner.id,
           county_id: req.body.county.id,
         },
         { transaction: t },
@@ -260,7 +257,7 @@ router.put("/:id", async function (req, res, next) {
  *       200:
  *         $ref: '#/components/responses/Success'
  */
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", roleBasedAuth("manage_communities"), async function (req, res, next) {
   try {
     const community = await Community.findByPk(req.params.id);
     if (!community) {

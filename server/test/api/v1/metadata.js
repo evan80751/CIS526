@@ -9,6 +9,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import chaiJsonSchemaAjv from "chai-json-schema-ajv";
 import chaiShallowDeepEqual from "chai-shallow-deep-equal";
+import { login, all_roles, testRoleBasedAuth } from "../../helpers.js";
 // Import Express application
 import app from "../../../app.js";
 // Configure Chai and AJV
@@ -18,6 +19,8 @@ use(chaiJsonSchemaAjv.create({ ajv, verbose: true }));
 use(chaiShallowDeepEqual);
 // Modify Object.prototype for BDD style assertions
 should();
+
+let token;
 
 const metadataSchema = {
   type: "object",
@@ -106,7 +109,6 @@ const newMetadata = {
   citation: "Firstname Lastname, New Metadata, 2025-02, ...",
   copyright_id: 1,
   keywords: "Keyword1 Keyword2 Keyword3",
-  owner: { id: 1 },
 };
 
 /**
@@ -116,6 +118,7 @@ const getAllMetadata = () => {
   it("should list all metadata", (done) => {
     request(app)
       .get("/api/v1/metadata")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -127,6 +130,7 @@ const getAllMetadata = () => {
   it("all metadata should match schema", (done) => {
     request(app)
       .get("/api/v1/metadata")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -143,6 +147,7 @@ const getSingleMetadata = () => {
   it("should get metadata with id '1'", (done) => {
     request(app)
       .get("/api/v1/metadata/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -157,6 +162,7 @@ const getSingleMetadata = () => {
   it("metadata '1' should match schema", (done) => {
     request(app)
       .get("/api/v1/metadata/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -168,6 +174,7 @@ const getSingleMetadata = () => {
   it("metadata '1' should have correct owner", (done) => {
     request(app)
       .get("/api/v1/metadata/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -179,6 +186,7 @@ const getSingleMetadata = () => {
   it("should return 404 when requesting metadata with id '0'", (done) => {
     request(app)
       .get("/api/v1/metadata/0")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -189,6 +197,7 @@ const getSingleMetadata = () => {
   it("should return 404 when requesting metadata with id '-1'", (done) => {
     request(app)
       .get("/api/v1/metadata/-1")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -204,6 +213,7 @@ const createMetadata = () => {
   it("should successfully create new metadata", (done) => {
     request(app)
       .post("/api/v1/metadata")
+      .set("Authorization", "Bearer " + token)
       .send(newMetadata)
       .expect(201)
       .end((err, res) => {
@@ -218,6 +228,7 @@ const createMetadata = () => {
     request(app)
       .post("/api/v1/metadata")
       .send({ ...newMetadata, title: undefined })
+      .set("Authorization", "Bearer " + token)
       .expect(422)
       .end((err, res) => {
         if (err) return done(err);
@@ -235,6 +246,7 @@ const updateMetadata = () => {
     request(app)
       .put("/api/v1/metadata/1")
       .send({ ...newMetadata, title: "Updated Metadata" })
+      .set("Authorization", "Bearer " + token)
       .expect(201)
       .end((err, res) => {
         if (err) return done(err);
@@ -247,6 +259,7 @@ const updateMetadata = () => {
   it("should return 404 when updating metadata with id '0'", (done) => {
     request(app)
       .put("/api/v1/metadata/0")
+      .set("Authorization", "Bearer " + token)
       .send(newMetadata)
       .expect(404)
       .end((err) => {
@@ -263,6 +276,7 @@ const deleteMetadata = () => {
   it("should successfully delete metadata ID '2'", (done) => {
     request(app)
       .delete("/api/v1/metadata/2")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -274,6 +288,7 @@ const deleteMetadata = () => {
   it("should return 404 when deleting metadata with id '0'", (done) => {
     request(app)
       .delete("/api/v1/metadata/0")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -289,6 +304,7 @@ const addRemoveDocument = () => {
   it("should successfully add document to metadata ID '1'", (done) => {
     request(app)
       .post("/api/v1/metadata/1/add_document")
+      .set("Authorization", "Bearer " + token)
       .send({ id: 2 })
       .expect(201)
       .end((err, res) => {
@@ -301,6 +317,7 @@ const addRemoveDocument = () => {
   it("should successfully remove document from metadata ID '1'", (done) => {
     request(app)
       .post("/api/v1/metadata/1/remove_document")
+      .set("Authorization", "Bearer " + token)
       .send({ id: 2 })
       .expect(201)
       .end((err, res) => {
@@ -313,6 +330,7 @@ const addRemoveDocument = () => {
   it("should return 404 when adding document to metadata with id '0'", (done) => {
     request(app)
       .post("/api/v1/metadata/0/add_document")
+      .set("Authorization", "Bearer " + token)
       .send({ id: 1 })
       .expect(404)
       .end((err) => {
@@ -329,6 +347,7 @@ const addRemoveCommunity = () => {
   it("should successfully add community to metadata ID '1'", (done) => {
     request(app)
       .post("/api/v1/metadata/1/add_community")
+      .set("Authorization", "Bearer " + token)
       .send({ id: 2 })
       .expect(201)
       .end((err, res) => {
@@ -341,6 +360,7 @@ const addRemoveCommunity = () => {
   it("should successfully remove community from metadata ID '1'", (done) => {
     request(app)
       .post("/api/v1/metadata/1/remove_community")
+      .set("Authorization", "Bearer " + token)
       .send({ id: 2 })
       .expect(201)
       .end((err, res) => {
@@ -353,6 +373,7 @@ const addRemoveCommunity = () => {
   it("should return 404 when adding community to metadata with id '0'", (done) => {
     request(app)
       .post("/api/v1/metadata/0/add_community")
+      .set("Authorization", "Bearer " + token)
       .send({ id: 1 })
       .expect(404)
       .end((err) => {
@@ -366,6 +387,9 @@ const addRemoveCommunity = () => {
  * Test /api/v1/metadata route
  */
 describe("/api/v1/metadata", () => {
+  beforeEach(async () => {
+    token = await login("admin");
+  });
   describe("GET /", () => {
     getAllMetadata();
   });
@@ -386,5 +410,29 @@ describe("/api/v1/metadata", () => {
   });
   describe("POST /{id}/add_community", () => {
     addRemoveCommunity();
+  });
+describe("GET / - role-based auth", () => {
+    const allowed_roles = ["view_documents", "manage_documents", "add_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/metadata", "get", r, allowed_roles.includes(r));
+    });
+  });
+  describe("POST / - role-based auth", () => {
+    const allowed_roles = ["manage_documents", "add_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/metadata", "post", r, allowed_roles.includes(r));
+    });
+  });
+  describe("PUT /{id} - role-based auth", () => {
+    const allowed_roles = ["manage_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/metadata/1", "put", r, allowed_roles.includes(r));
+    });
+  });
+  describe("DELETE /{id} - role-based auth", () => {
+    const allowed_roles = ["manage_documents"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/metadata/1", "delete", r, allowed_roles.includes(r));
+    });
   });
 });

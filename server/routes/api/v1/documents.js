@@ -22,6 +22,7 @@ import sendSuccess from "../../../utilities/send-success.js";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 // Import Sequelize
 import { ValidationError } from "sequelize";
+import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 // Create Express router
 const router = express.Router();
 // Configure multer storage
@@ -58,7 +59,7 @@ const upload = multer({ storage: storage });
  *               items:
  *                 $ref: '#/components/schemas/Document'
  */
-router.get("/", async function (req, res, next) {
+router.get("/", roleBasedAuth(["view_documents", "manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const documents = await Document.findAll();
     res.json(documents);
@@ -96,7 +97,7 @@ router.get("/", async function (req, res, next) {
  *             schema:
  *               $ref: '#/components/schemas/Document'
  */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", roleBasedAuth(["view_documents", "manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const document = await Document.findByPk(req.params.id);
     if (!document) {
@@ -135,7 +136,7 @@ router.get("/:id", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/", async function (req, res, next) {
+router.post("/", roleBasedAuth(["manage_documents", "add_documents"]), async function (req, res, next) {
   try {
     const result = await database.transaction(async (t) => {
       const document = await Document.create(
@@ -192,7 +193,7 @@ router.post("/", async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.put("/:id", async function (req, res, next) {
+router.put("/:id", roleBasedAuth("manage_documents"), async function (req, res, next) {
   try {
     const document = await Document.findByPk(req.params.id);
     if (!document) {
@@ -241,7 +242,7 @@ router.put("/:id", async function (req, res, next) {
  *       200:
  *         $ref: '#/components/responses/Success'
  */
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", roleBasedAuth("manage_documents"), async function (req, res, next) {
   try {
     const document = await Document.findByPk(req.params.id);
     if (!document) {
@@ -294,6 +295,7 @@ router.delete("/:id", async function (req, res, next) {
  */
 router.post(
   "/:id/upload",
+  roleBasedAuth(["manage_documents", "add_documents"]),
   upload.single("file"),
   async function (req, res, next) {
     try {

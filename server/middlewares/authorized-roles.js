@@ -17,7 +17,8 @@ const roleBasedAuth = function (role) {
         if (req.user) {
             const roles = req.user.roles.map((r) => r.role);
             logger.debug("User " + req.user.username + " has roles: " + roles.join(","))
-            if (roles.includes(role)) {
+            const allowed = Array.isArray(role) ? role: [role];
+            if (allowed.some((r) => roles.includes(r))) {
                 logger.debug("Role match!");
                 return next();
             }

@@ -50,10 +50,27 @@ export const testRoleBasedAuth = (route, method, role, allowed) => {
   it(
     "should role '" + role + "' access '" + method + " " + route + "': " + allowed,
     async () => {
+      // Login as admin to assign roles
+      const adminToken = await login("admin");
+      // Login as testuser (creates them via findOrCreate)
+      await login(role + "_testuser");
+      // Find the testuser and assign the role
+      const usersRes = await request(app)
+        .get("/api/v1/users")
+        .set("Authorization", "Bearer " + adminToken);
+      const testUser = usersRes.body.find((u) => u.username === role + "_testuser");
+      const roleObj = usersRes.body[0].roles.find((r) => r.role === role) ||
+        (await request(app).get("/api/v1/roles").set("Authorization", "Bearer " + adminToken))
+          .body.find((r) => r.role === role);
+      if (testUser && roleObj) {
+        await request(app)
+          .put("/api/v1/users/" + testUser.id)
+          .set("Authorization", "Bearer " + adminToken)
+          .send({ username: testUser.username, roles: [{ id: roleObj.id }] });
+      }
+      // Get fresh token for testuser with the role now assigned
       const token = await login(role + "_testuser");
-      // Give the test user the role
-      const agent = request.agent(app);
-      const res = await agent[method](route)
+      const res = await request(app)[method](route)
         .set("Authorization", "Bearer " + token)
         .send({});
       if (allowed) {

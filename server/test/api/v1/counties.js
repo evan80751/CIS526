@@ -12,6 +12,7 @@ import chaiShallowDeepEqual from "chai-shallow-deep-equal";
 
 // Import Express application
 import app from "../../../app.js";
+import { login, all_roles, testRoleBasedAuth } from "../../helpers.js";
 
 // Configure Chai and AJV
 const ajv = new Ajv();
@@ -21,6 +22,8 @@ use(chaiShallowDeepEqual);
 
 // Modify Object.prototype for BDD style assertions
 should();
+
+let token;
 
 const countySchema = {
   type: "array",
@@ -71,6 +74,7 @@ const getAllCounties = () => {
   it("should list all counties", (done) => {
     request(app)
       .get("/api/v1/counties")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -88,6 +92,7 @@ const getCountiesSchemaMatch = () => {
   it("all counties should match schema", (done) => {
     request(app)
       .get("/api/v1/counties")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -104,6 +109,7 @@ const findCounty = (county) => {
   it("should contain '" + county.name + "' county ", (done) => {
     request(app)
       .get("/api/v1/counties")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -125,6 +131,9 @@ const counties = [
  * Test /api/v1/counties route
  */
 describe("/api/v1/counties", () => {
+  beforeEach(async () => {
+    token = await login("admin");
+  });
   describe("GET /", () => {
     getAllCounties();
     getCountiesSchemaMatch();
@@ -132,4 +141,10 @@ describe("/api/v1/counties", () => {
       findCounty(c);
     });
   });
+  describe("GET / - role-base auth", () => {
+    const allowed_roles = ["view_communities", "manage_communities", "add_communities"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/counties", "get", r, allowed_roles.includes(r));
+    })
+  })
 });

@@ -11,6 +11,7 @@ import chaiJsonSchemaAjv from "chai-json-schema-ajv";
 import chaiShallowDeepEqual from "chai-shallow-deep-equal";
 // Import Express application
 import app from "../../../app.js";
+import { login, all_roles, testRoleBasedAuth } from "../../helpers.js";
 // Configure Chai and AJV
 const ajv = new Ajv();
 addFormats(ajv);
@@ -18,6 +19,8 @@ use(chaiJsonSchemaAjv.create({ ajv, verbose: true }));
 use(chaiShallowDeepEqual);
 // Modify Object.prototype for BDD style assertions
 should();
+
+let token;
 
 const communitySchema = {
   type: "object",
@@ -67,6 +70,7 @@ const getAllCommunities = () => {
   it("should list all communities", (done) => {
     request(app)
       .get("/api/v1/communities")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -83,6 +87,7 @@ const getCommunitiesSchemaMatch = () => {
   it("all communities should match schema", (done) => {
     request(app)
       .get("/api/v1/communities")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -102,6 +107,7 @@ const getSingleCommunity = () => {
   it("should get community 'Colony'", (done) => {
     request(app)
       .get("/api/v1/communities/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -113,6 +119,7 @@ const getSingleCommunity = () => {
   it("community 'Colony' should match schema", (done) => {
     request(app)
       .get("/api/v1/communities/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -124,6 +131,7 @@ const getSingleCommunity = () => {
   it("community 'Colony' should have correct owner and county", (done) => {
     request(app)
       .get("/api/v1/communities/1")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -140,6 +148,7 @@ const getSingleCommunity = () => {
   it("should return 404 when requesting community with id '0'", (done) => {
     request(app)
       .get("/api/v1/communities/0")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -150,6 +159,7 @@ const getSingleCommunity = () => {
   it("should return 404 when requesting community with id '-1'", (done) => {
     request(app)
       .get("/api/v1/communities/-1")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -165,11 +175,11 @@ const createCommunity = () => {
   it("should successfully create a new community", (done) => {
     request(app)
       .post("/api/v1/communities")
+      .set("Authorization", "Bearer " + token)
       .send({
         name: "New Community",
         lat: 35.1234567,
         long: -96.1234567,
-        owner: { id: 1 },
         county: { id: 1 },
       })
       .expect(201)
@@ -184,10 +194,10 @@ const createCommunity = () => {
   it("should fail when missing required field 'name'", (done) => {
     request(app)
       .post("/api/v1/communities")
+      .set("Authorization", "Bearer " + token)
       .send({
         lat: 35.1234567,
         long: -96.1234567,
-        owner: { id: 1 },
         county: { id: 1 },
       })
       .expect(422)
@@ -206,11 +216,11 @@ const updateCommunity = () => {
   it("should successfully update community ID '1'", (done) => {
     request(app)
       .put("/api/v1/communities/1")
+      .set("Authorization", "Bearer " + token)
       .send({
         name: "Updated Community",
         lat: 35.1234567,
         long: -96.1234567,
-        owner: { id: 1 },
         county: { id: 1 },
       })
       .expect(201)
@@ -225,11 +235,11 @@ const updateCommunity = () => {
   it("should return 404 when updating community with id '0'", (done) => {
     request(app)
       .put("/api/v1/communities/0")
+      .set("Authorization", "Bearer " + token)
       .send({
         name: "Updated Community",
         lat: 35.1234567,
         long: -96.1234567,
-        owner: { id: 1 },
         county: { id: 1 },
       })
       .expect(404)
@@ -247,6 +257,7 @@ const deleteCommunity = () => {
   it("should successfully delete community ID '2'", (done) => {
     request(app)
       .delete("/api/v1/communities/2")
+      .set("Authorization", "Bearer " + token)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -258,6 +269,7 @@ const deleteCommunity = () => {
   it("should return 404 when deleting community with id '0'", (done) => {
     request(app)
       .delete("/api/v1/communities/0")
+      .set("Authorization", "Bearer " + token)
       .expect(404)
       .end((err) => {
         if (err) return done(err);
@@ -270,6 +282,9 @@ const deleteCommunity = () => {
  * Test /api/v1/communities route
  */
 describe("/api/v1/communities", () => {
+  beforeEach(async () => {
+    token = await login("admin");
+  });
   describe("GET /", () => {
     getAllCommunities();
     getCommunitiesSchemaMatch();
@@ -285,5 +300,29 @@ describe("/api/v1/communities", () => {
   });
   describe("DELETE /{id}", () => {
     deleteCommunity();
+  });
+describe("GET / - role-based auth", () => {
+    const allowed_roles = ["view_communities", "manage_communities", "add_communities"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/communities", "get", r, allowed_roles.includes(r));
+    });
+  });
+  describe("POST / - role-based auth", () => {
+    const allowed_roles = ["manage_communities", "add_communities"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/communities", "post", r, allowed_roles.includes(r));
+    });
+  });
+  describe("PUT /{id} - role-based auth", () => {
+    const allowed_roles = ["manage_communities"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/communities/1", "put", r, allowed_roles.includes(r));
+    });
+  });
+  describe("DELETE /{id} - role-based auth", () => {
+    const allowed_roles = ["manage_communities"];
+    all_roles.forEach((r) => {
+      testRoleBasedAuth("/api/v1/communities/1", "delete", r, allowed_roles.includes(r));
+    });
   });
 });

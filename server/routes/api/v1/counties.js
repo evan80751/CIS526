@@ -14,6 +14,7 @@ import express from "express";
 import { County, Community } from "../../../models/models.js";
 // Import logger
 import logger from "../../../configs/logger.js";
+import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 // Create Express router
 const router = express.Router();
 
@@ -40,8 +41,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/County'
  */
-router.get("/", async function (req, res, next) {
-  try {
+router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {  try {
     const counties = await County.findAll({
       include: [
         {
