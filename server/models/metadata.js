@@ -20,7 +20,6 @@ import Sequelize from "sequelize";
  *                  - citation
  *                  - copyright_id
  *                  - keywords
- *                  - owner_user_id
  *              properties:
  *                  id:
  *                      type: integer
@@ -50,9 +49,6 @@ import Sequelize from "sequelize";
  *                  keywords:
  *                      type: string
  *                      description: keywords for the work
- *                  owner_user_id:
- *                      type: integer
- *                      description: id of the owning user
  *                  createdAt:
  *                      type: string
  *                      format: date-time
@@ -71,7 +67,6 @@ import Sequelize from "sequelize";
  *                  citation: Evan Jelle, Riley County
  *                  copyright_id: 1
  *                  keywords: Riley County, Manhattan, Kansas
- *                  owner_user_id: 1
  *                  createdAt: 2025-02-04T15:36:32.000Z
  *                  updatedAt: 2025-02-04T15:36:32.000Z
  */

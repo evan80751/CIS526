@@ -15,7 +15,6 @@ import Sequelize from "sequelize";
  *                  - name
  *                  - lat
  *                  - long
- *                  - owner_user_id
  *                  - county_id
  *              properties:
  *                  id:
@@ -32,9 +31,6 @@ import Sequelize from "sequelize";
  *                      type: number
  *                      format: float
  *                      description: longitude of the community
- *                  owner_user_id:
- *                      type: integer
- *                      description: id of the owning user
  *                  county_id:
  *                      type: integer
  *                      description: id of the county
@@ -51,7 +47,6 @@ import Sequelize from "sequelize";
  *                  name: Colony
  *                  lat: 38.0711049
  *                  long: -95.36666
- *                  owner_user_id: 1
  *                  county_id: 2
  *                  createdAt: 2025-02-4T15:36:32.000Z
  *                  updatedAt: 2025-02-4T15:36:32.000Z
