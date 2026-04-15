@@ -142,6 +142,7 @@ router.get("/:id", roleBasedAuth(["view_documents", "manage_documents", "add_doc
  * /api/v1/metadata:
  *   post:
  *     summary: create metadata
+ *     description: Creates a new metadata record. The owner is automatically set to the authenticated user.
  *     tags: [metadata]
  *     requestBody:
  *       description: metadata
@@ -196,7 +197,8 @@ router.post("/", roleBasedAuth(["manage_documents", "add_documents"]), async fun
  * @swagger
  * /api/v1/metadata/{id}:
  *   put:
- *     summary: create metadata
+ *     summary: update metadata
+ *     description: Updates an existing metadata record. The owner cannot be changed.
  *     tags: [metadata]
  *     parameters:
  *       - in: path

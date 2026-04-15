@@ -135,6 +135,7 @@ router.get("/:id", roleBasedAuth(["view_communities", "manage_communities", "add
  * /api/v1/communities:
  *   post:
  *     summary: create community
+ *     description: Creates a new community. The owner is automatically set to the authenticated user.
  *     tags: [communities]
  *     requestBody:
  *       description: community
@@ -185,6 +186,7 @@ router.post("/", roleBasedAuth(["manage_communities", "add_communities"]), async
  * /api/v1/communities/{id}:
  *   put:
  *     summary: update community
+ *     description: Updates an existing community. The owner cannot be changed.
  *     tags: [communities]
  *     parameters:
  *       - in: path
