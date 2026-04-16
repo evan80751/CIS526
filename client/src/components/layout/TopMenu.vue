@@ -38,8 +38,10 @@ const items = ref([
                 <img src="https://placehold.co/40x40" alt="Placeholder Logo" />
             </template>
             <template #end>
-                <UserProfile />
-                <ThemeToggle />
+                <div class="flex items-center gap-1">
+                    <ThemeToggle />
+                    <UserProfile />
+                </div>
             </template>
         </Menubar>
     </div>
