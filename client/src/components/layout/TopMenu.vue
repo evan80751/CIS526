@@ -12,6 +12,7 @@ const router = useRouter()
 // Import Components
 import Menubar from 'primevue/menubar'
 import ThemeToggle from './ThemeToggle.vue'
+import UserProfile from './UserProfile.vue'
 
 // Declare State
 const items = ref([
@@ -33,6 +34,7 @@ const items = ref([
                 <img src="https://placehold.co/40x40" alt="Placeholder Logo" />
             </template>
             <template #end>
+                <UserProfile />
                 <ThemeToggle />
             </template>
         </Menubar>

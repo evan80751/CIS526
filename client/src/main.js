@@ -18,6 +18,7 @@ import App from './App.vue'
 
 // Import Configurations
 import router from './router'
+import { setupAxios } from './configs/api'
 
 // Create Vue App
 const app = createApp(App)
@@ -36,6 +37,9 @@ app.use(PrimeVue, {
 
 // Install Directives
 app.directive('tooltip', Tooltip)
+
+// Setup Interceptors
+setupAxios()
 
 // Mount Vue App on page
 app.mount('#app')
