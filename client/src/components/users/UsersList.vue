@@ -12,6 +12,9 @@ import Column from 'primevue/column'
 import { IconField, InputIcon, InputText, MultiSelect, Chip } from 'primevue'
 import { FilterMatchMode, FilterService } from '@primevue/core/api'
 import RoleChip from '../roles/RoleChip.vue'
+import Button from 'primevue/button'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 // Declare State
 const users = ref([])
@@ -98,6 +101,27 @@ api
             <RoleChip :role="slotProps.option" />
           </template>
         </MultiSelect>
+      </template>
+    </Column>
+    <Column header="Actions" style="min-width: 8rem">
+      <template #body="slotProps">
+        <div class="flex gap-2">
+          <Button
+            icon="pi pi-pencil"
+            outlined
+            rounded
+            @click="router.push({ name: 'edituser', params: { id: slotProps.data.id } })"
+            v-tooltip.bottom="'Edit'"
+          />
+          <Button
+            icon="pi pi-trash"
+            outlined
+            rounded
+            severity="danger"
+            @click="router.push({ name: 'deleteuser', params: { id: slotProps.data.id } })"
+            v-tooltip.bottom="'Delete'"
+          />
+        </div>
       </template>
     </Column>
   </DataTable>

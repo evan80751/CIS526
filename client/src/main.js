@@ -12,6 +12,7 @@ import Tooltip from 'primevue/tooltip'
 
 // Import CSS
 import './assets/main.css'
+import 'primeicons/primeicons.css'
 
 //Import Vue App
 import App from './App.vue'
