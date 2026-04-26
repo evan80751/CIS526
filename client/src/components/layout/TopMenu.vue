@@ -40,6 +40,12 @@ const items = ref([
     command: () => { router.push({ name: 'roles' }) },
     roles: ['manage_users'],
   },
+  {
+    label: 'Users',
+    icon: 'pi pi-users',
+    command: () => { router.push({ name: 'users' }) },
+    roles: ['manage_users'],
+  },
 ])
 
 // Filter items by role

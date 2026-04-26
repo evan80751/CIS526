@@ -12,6 +12,7 @@
     "@primeuix/themes": "^2.0.3",
     "@tailwindcss/vite": "^4.2.2",
     "axios": "^1.15.0",
+    "date-fns": "^4.1.0",
     "jwt-decode": "^4.0.0",
     "pinia": "^3.0.4",
     "primevue": "^4.5.5",
