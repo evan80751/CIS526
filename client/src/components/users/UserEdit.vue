@@ -9,6 +9,7 @@ import { api } from '@/configs/api'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 import TextField from '../forms/TextField.vue'
+import AutoCompleteMultipleField from '../forms/AutoCompleteMultipleField.vue'
 import Button from 'primevue/button'
 
 // Incoming Props
@@ -18,6 +19,7 @@ const props = defineProps({
 
 // Declare State
 const user = ref({})
+const roles = ref([])
 const errors = ref([])
 
 // Load User
@@ -30,12 +32,22 @@ api
     console.log(error)
   })
 
+// Load Roles
+api
+  .get('/api/v1/roles')
+  .then(function (response) {
+    roles.value = response.data
+  })
+  .catch(function (error) {
+    console.log(error)
+  })
+
 // Save User
 const saveUser = function () {
   api
     .put('/api/v1/users/' + props.id, user.value)
     .then(function (response) {
-        router.push({ name: 'users' })
+      router.push({ name: 'users' })
     })
     .catch(function (error) {
       if (error.response.status === 422) {
@@ -52,6 +64,15 @@ const saveUser = function () {
       field="username"
       label="Username"
       icon="pi pi-user"
+      :errors="errors"
+    />
+    <AutoCompleteMultipleField
+      v-model="user.roles"
+      field="roles"
+      label="Roles"
+      icon="pi pi-id-card"
+      :options="roles"
+      optionLabel="role"
       :errors="errors"
     />
     <div class="flex gap-2">
