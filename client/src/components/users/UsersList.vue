@@ -113,6 +113,12 @@ const confirmDelete = function (id) {
   >
     <template #header>
       <div class="flex justify-between">
+        <Button
+          label="New User"
+          icon="pi pi-user-plus"
+          severity="success"
+          @click="router.push({ name: 'newuser' })"
+        />
         <IconField>
           <InputIcon>
             <i class="pi pi-search" />
