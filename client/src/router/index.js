@@ -10,6 +10,19 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import { useTokenStore } from "@/stores/Token";
 
+// Router Guard - check roles before entering route
+const requireRoles = (...roles) => {
+  return () => {
+    const tokenStore = useTokenStore()
+    const allow = roles.some((r) => tokenStore.has_role(r))
+    if (allow) {
+      return true
+    } else {
+      return { name: 'home' }
+    }
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -27,6 +40,12 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
+    },
+    {
+      path: '/roles',
+      name: 'roles',
+      component: () => import('../views/RolesView.vue'),
+      beforeEnter: requireRoles('manage_users'),
     },
   ],
 })

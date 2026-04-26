@@ -3,9 +3,8 @@
  * @file Top menu bar of the entire application
  * @author Evan Jelle
  */
-
-//Import Libraries
-import { ref } from 'vue'
+// Import Libraries
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -14,35 +13,67 @@ import Menubar from 'primevue/menubar'
 import ThemeToggle from './ThemeToggle.vue'
 import UserProfile from './UserProfile.vue'
 
+// Stores
+import { useTokenStore } from '@/stores/Token'
+const tokenStore = useTokenStore()
+
 // Declare State
 const items = ref([
-    {
-        label: 'Home',
-        command: () => { router.push({ name: 'home' }) }
-    },
-    {
-        label: 'About',
-        command: () => { router.push({ name: 'about' }) }
-    },
-    {
-        label: 'Profile',
-        command: () => { router.push({ name: 'profile' }) }
-    }
+  {
+    label: 'Home',
+    icon: 'pi pi-home',
+    command: () => { router.push({ name: 'home' }) },
+  },
+  {
+    label: 'About',
+    icon: 'pi pi-info-circle',
+    command: () => { router.push({ name: 'about' }) },
+  },
+  {
+    label: 'Profile',
+    icon: 'pi pi-user',
+    command: () => { router.push({ name: 'profile' }) },
+  },
+  {
+    label: 'Roles',
+    icon: 'pi pi-id-card',
+    command: () => { router.push({ name: 'roles' }) },
+    roles: ['manage_users'],
+  },
 ])
+
+// Filter items by role
+const visible_items = computed(() => {
+  return items.value.filter((item) => {
+    if (item.roles) {
+      if (tokenStore.token.length > 0) {
+        if (item.roles == '*') {
+          return true
+        } else {
+          return item.roles.some((r) => tokenStore.has_role(r))
+        }
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  })
+})
 </script>
 
 <template>
-    <div>
-        <Menubar :model="items">
-            <template #start>
-                <img src="https://placehold.co/40x40" alt="Placeholder Logo" />
-            </template>
-            <template #end>
-                <div class="flex items-center gap-1">
-                    <ThemeToggle />
-                    <UserProfile />
-                </div>
-            </template>
-        </Menubar>
-    </div>
+  <div>
+    <Menubar :model="visible_items">
+      <template #start>
+        <img src="https://placehold.co/40x40" alt="Placeholder Logo" />
+      </template>
+      <template #end>
+        <div class="flex items-center gap-1">
+          <ThemeToggle />
+          <UserProfile />
+        </div>
+      </template>
+    </Menubar>
+  </div>
 </template>
