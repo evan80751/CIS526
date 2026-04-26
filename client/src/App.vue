@@ -3,9 +3,10 @@
  * @file Main Vue Application
  * @author Evan Jelle
  */
-
 // Import Components
 import TopMenu from './components/layout/TopMenu.vue'
+import Toast from 'primevue/toast'
+import ConfirmDialog from 'primevue/confirmdialog'
 </script>
 
 <template>
@@ -19,4 +20,6 @@ import TopMenu from './components/layout/TopMenu.vue'
     </div>
   </main>
   <footer></footer>
+  <Toast position="bottom-right" />
+  <ConfirmDialog />
 </template>

@@ -9,6 +9,8 @@ import { createPinia } from "pinia";
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 import Tooltip from 'primevue/tooltip'
+import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 
 // Import CSS
 import './assets/main.css'
@@ -35,6 +37,8 @@ app.use(PrimeVue, {
         },
     },
 })
+app.use(ToastService)
+app.use(ConfirmationService)
 
 // Install Directives
 app.directive('tooltip', Tooltip)

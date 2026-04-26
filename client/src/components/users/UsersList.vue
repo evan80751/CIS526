@@ -9,12 +9,16 @@ import { api } from '@/configs/api'
 import { formatDistance } from 'date-fns'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { IconField, InputIcon, InputText, MultiSelect, Chip } from 'primevue'
+import { IconField, InputIcon, InputText, MultiSelect, Chip, Toast } from 'primevue'
 import { FilterMatchMode, FilterService } from '@primevue/core/api'
 import RoleChip from '../roles/RoleChip.vue'
 import Button from 'primevue/button'
 import { useRouter } from 'vue-router'
+import { useConfirm } from 'primevue'
+import { useToast } from 'primevue/usetoast'
+const confirm = useConfirm()
 const router = useRouter()
+const toast = useToast()
 
 // Declare State
 const users = ref([])
@@ -52,6 +56,50 @@ api
   .catch(function (error) {
     console.log(error)
   })
+
+// Delete User
+const deleteUser = function (id) {
+  api
+    .delete('/api/v1/users/' + id)
+    .then(function (response) {
+      if (response.status === 200) {
+        toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.data.message,
+          life: 5000,
+        })
+        users.value.splice(
+          users.value.findIndex((u) => u.id == id),
+          1,
+        )
+      }
+    })
+    .catch(function (error) {
+      toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+    })
+}
+
+// Confirmation Dialog
+const confirmDelete = function (id) {
+  confirm.require({
+    message: 'Are you sure you want to delete this user?',
+    header: 'Delete User',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true,
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger',
+    },
+    accept: () => {
+      deleteUser(id)
+    },
+  })
+}
 </script>
 
 <template>
@@ -118,7 +166,7 @@ api
             outlined
             rounded
             severity="danger"
-            @click="router.push({ name: 'deleteuser', params: { id: slotProps.data.id } })"
+            @click="confirmDelete(slotProps.data.id)"
             v-tooltip.bottom="'Delete'"
           />
         </div>
