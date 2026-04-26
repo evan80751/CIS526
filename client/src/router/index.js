@@ -59,6 +59,12 @@ const router = createRouter({
       component: () => import('../views/UsersEditView.vue'),
       beforeEnter: requireRoles('manage_users'),
     },
+    {
+      path: '/users/new',
+      name: 'newuser',
+      component: () => import('../views/UsersEditView.vue'),
+      beforeEnter: requireRoles('manage_users'),
+    },
   ],
 })
 

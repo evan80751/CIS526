@@ -18,19 +18,21 @@ const props = defineProps({
 })
 
 // Declare State
-const user = ref({})
+const user = ref({ username: '', roles: [] })
 const roles = ref([])
 const errors = ref([])
 
-// Load User
-api
-  .get('/api/v1/users/' + props.id)
-  .then(function (response) {
-    user.value = response.data
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
+// Load User (only if editing)
+if (props.id) {
+  api
+    .get('/api/v1/users/' + props.id)
+    .then(function (response) {
+      user.value = response.data
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+}
 
 // Load Roles
 api
@@ -44,16 +46,31 @@ api
 
 // Save User
 const saveUser = function () {
-  api
-    .put('/api/v1/users/' + props.id, user.value)
-    .then(function (response) {
-      router.push({ name: 'users' })
-    })
-    .catch(function (error) {
-      if (error.response.status === 422) {
-        errors.value = error.response.data.errors
-      }
-    })
+  if (props.id) {
+    // Edit existing user
+    api
+      .put('/api/v1/users/' + props.id, user.value)
+      .then(function (response) {
+        router.push({ name: 'users' })
+      })
+      .catch(function (error) {
+        if (error.response.status === 422) {
+          errors.value = error.response.data.errors
+        }
+      })
+  } else {
+    // Create new user
+    api
+      .post('/api/v1/users', user.value)
+      .then(function (response) {
+        router.push({ name: 'users' })
+      })
+      .catch(function (error) {
+        if (error.response.status === 422) {
+          errors.value = error.response.data.errors
+        }
+      })
+  }
 }
 </script>
 
