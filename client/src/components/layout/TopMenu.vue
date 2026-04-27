@@ -58,6 +58,12 @@ const items = ref([
     command: () => { router.push({ name: 'communities' }) },
     roles: ['view_communities', 'manage_communities', 'add_communities'],
   },
+{
+    label: 'Documents',
+    icon: 'pi pi-file',
+    command: () => { router.push({ name: 'documents' }) },
+    roles: ['view_documents', 'manage_documents', 'add_documents'],
+  },
 ])
 
 // Filter items by role

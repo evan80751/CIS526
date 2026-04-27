@@ -89,6 +89,24 @@ const router = createRouter({
       component: () => import('../views/CommunitiesEditView.vue'),
       beforeEnter: requireRoles('manage_communities', 'add_communities'),
     },
+    {
+      path: '/documents',
+      name: 'documents',
+      component: () => import('../views/DocumentsListView.vue'),
+      beforeEnter: requireRoles('view_documents', 'manage_documents', 'add_documents'),
+    },
+    {
+      path: '/documents/:id/edit',
+      name: 'editdocument',
+      component: () => import('../views/DocumentsEditView.vue'),
+      beforeEnter: requireRoles('manage_documents'),
+    },
+    {
+      path: '/documents/new',
+      name: 'newdocument',
+      component: () => import('../views/DocumentsEditView.vue'),
+      beforeEnter: requireRoles('manage_documents', 'add_documents'),
+    },
   ],
 })
 
