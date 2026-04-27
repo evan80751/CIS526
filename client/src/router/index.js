@@ -71,6 +71,24 @@ const router = createRouter({
       component: () => import('../views/CountiesListView.vue'),
       beforeEnter: requireRoles('view_communities', 'manage_communities', 'add_communities'),
     },
+    {
+      path: '/communities',
+      name: 'communities',
+      component: () => import('../views/CommunitiesListView.vue'),
+      beforeEnter: requireRoles('view_communities', 'manage_communities', 'add_communities'),
+    },
+    {
+      path: '/communities/:id/edit',
+      name: 'editcommunity',
+      component: () => import('../views/CommunitiesEditView.vue'),
+      beforeEnter: requireRoles('manage_communities'),
+    },
+    {
+      path: '/communities/new',
+      name: 'newcommunity',
+      component: () => import('../views/CommunitiesEditView.vue'),
+      beforeEnter: requireRoles('manage_communities', 'add_communities'),
+    },
   ],
 })
 

@@ -52,6 +52,12 @@ const items = ref([
     command: () => { router.push({ name: 'counties' }) },
     roles: ['view_communities', 'manage_communities', 'add_communities'],
   },
+  {
+    label: 'Communities',
+    icon: 'pi pi-building-columns',
+    command: () => { router.push({ name: 'communities' }) },
+    roles: ['view_communities', 'manage_communities', 'add_communities'],
+  },
 ])
 
 // Filter items by role
