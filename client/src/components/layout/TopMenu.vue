@@ -46,6 +46,12 @@ const items = ref([
     command: () => { router.push({ name: 'users' }) },
     roles: ['manage_users'],
   },
+  {
+    label: 'Counties',
+    icon: 'pi pi-map',
+    command: () => { router.push({ name: 'counties' }) },
+    roles: ['view_communities', 'manage_communities', 'add_communities'],
+  },
 ])
 
 // Filter items by role

@@ -65,6 +65,12 @@ const router = createRouter({
       component: () => import('../views/UsersEditView.vue'),
       beforeEnter: requireRoles('manage_users'),
     },
+    {
+      path: '/counties',
+      name: 'counties',
+      component: () => import('../views/CountiesListView.vue'),
+      beforeEnter: requireRoles('view_communities', 'manage_communities', 'add_communities'),
+    },
   ],
 })
 
