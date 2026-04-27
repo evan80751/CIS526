@@ -11,7 +11,6 @@
 // Import libraries
 import express from "express";
 import multer from "multer";
-import path from "path";
 // Import models
 import { Document } from "../../../models/models.js";
 // Import configs
@@ -23,15 +22,20 @@ import handleValidationError from "../../../utilities/handle-validation-error.js
 // Import Sequelize
 import { ValidationError } from "sequelize";
 import roleBasedAuth from "../../../middlewares/authorized-roles.js";
+// Import nanoid and mine-types
+import { nanoid } from "nanoid";
+import mime from "mime-types";
+
 // Create Express router
 const router = express.Router();
+
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, nanoid() + "." + mime.extension(file.mimetype));
   },
 });
 const upload = multer({ storage: storage });
