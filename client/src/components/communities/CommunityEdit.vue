@@ -8,8 +8,6 @@ import { ref } from 'vue'
 import { api } from '@/configs/api'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-import { useToast } from 'primevue/usetoast'
-const toast = useToast()
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import TextField from '../forms/TextField.vue'

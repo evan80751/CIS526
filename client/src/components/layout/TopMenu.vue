@@ -58,7 +58,7 @@ const items = ref([
     command: () => { router.push({ name: 'communities' }) },
     roles: ['view_communities', 'manage_communities', 'add_communities'],
   },
-{
+  {
     label: 'Documents',
     icon: 'pi pi-file',
     command: () => { router.push({ name: 'documents' }) },
