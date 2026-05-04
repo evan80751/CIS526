@@ -4,22 +4,14 @@
  * @author Evan Jelle
  */
 // Import Libraries
-import { ref } from 'vue'
-import { api } from '@/configs/api'
 import Card from 'primevue/card'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/User'
 
 // Declare State
-const roles = ref([])
-
-// Load Roles
-api
-  .get('/api/v1/roles')
-  .then(function (response) {
-    roles.value = response.data
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
+const userStore = useUserStore()
+const { roles } = storeToRefs(userStore)
+userStore.hydrate()
 </script>
 
 <template>

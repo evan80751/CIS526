@@ -5,6 +5,8 @@
  */
 // Import Libraries
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/User'
 import { api } from '@/configs/api'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -19,8 +21,10 @@ const props = defineProps({
 
 // Declare State
 const user = ref({ username: '', roles: [] })
-const roles = ref([])
 const errors = ref([])
+const userStore = useUserStore()
+const { roles } = storeToRefs(userStore)
+userStore.hydrate()
 
 // Load User (only if editing)
 if (props.id) {
@@ -33,16 +37,6 @@ if (props.id) {
       console.log(error)
     })
 }
-
-// Load Roles
-api
-  .get('/api/v1/roles')
-  .then(function (response) {
-    roles.value = response.data
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
 
 // Save User
 const saveUser = function () {

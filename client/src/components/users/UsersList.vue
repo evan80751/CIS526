@@ -5,6 +5,8 @@
  */
 // Import Libraries
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/User'
 import { api } from '@/configs/api'
 import { formatDistance } from 'date-fns'
 import DataTable from 'primevue/datatable'
@@ -19,10 +21,9 @@ import { useToast } from 'primevue/usetoast'
 const confirm = useConfirm()
 const router = useRouter()
 const toast = useToast()
-
-// Declare State
-const users = ref([])
-const roles = ref([])
+const userStore = useUserStore()
+const { users, roles } = storeToRefs(userStore)
+userStore.hydrate()
 
 // Custom filter for roles
 FilterService.register('filterByRole', (value, filter) => {
@@ -36,26 +37,6 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   roles: { value: null, matchMode: 'filterByRole' },
 })
-
-// Load Users
-api
-  .get('/api/v1/users')
-  .then(function (response) {
-    users.value = response.data
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
-
-// Load Roles
-api
-  .get('/api/v1/roles')
-  .then(function (response) {
-    roles.value = response.data
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
 
 // Delete User
 const deleteUser = function (id) {
