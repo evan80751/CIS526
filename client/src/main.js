@@ -11,6 +11,7 @@ import Aura from '@primeuix/themes/aura'
 import Tooltip from 'primevue/tooltip'
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
+import DialogService from 'primevue/dialogservice'
 
 // Import CSS
 import './assets/main.css'
@@ -39,6 +40,7 @@ app.use(PrimeVue, {
 })
 app.use(ToastService)
 app.use(ConfirmationService)
+app.use(DialogService)
 
 // Install Directives
 app.directive('tooltip', Tooltip)

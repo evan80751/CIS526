@@ -7,6 +7,7 @@
 import TopMenu from './components/layout/TopMenu.vue'
 import Toast from 'primevue/toast'
 import ConfirmDialog from 'primevue/confirmdialog'
+import DynamicDialog from 'primevue/dynamicdialog'
 </script>
 
 <template>
@@ -22,4 +23,5 @@ import ConfirmDialog from 'primevue/confirmdialog'
   <footer></footer>
   <Toast position="bottom-right" />
   <ConfirmDialog />
+  <DynamicDialog />
 </template>

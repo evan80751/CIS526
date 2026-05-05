@@ -4,7 +4,7 @@
  * @author Evan Jelle
  */
 // Import Libraries
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/User'
 import { api } from '@/configs/api'
@@ -18,12 +18,30 @@ import Button from 'primevue/button'
 import { useRouter } from 'vue-router'
 import { useConfirm } from 'primevue'
 import { useToast } from 'primevue/usetoast'
+import { useDialog } from 'primevue/usedialog'
+const dialog = useDialog()
 const confirm = useConfirm()
 const router = useRouter()
 const toast = useToast()
 const userStore = useUserStore()
 const { users, roles } = storeToRefs(userStore)
+const userEditComponent = defineAsyncComponent(() => import('./UserEdit.vue'))
 userStore.hydrate()
+
+// Load Dialog
+const editDialog = function (id) {
+  dialog.open(userEditComponent, {
+    props: {
+      style: {
+        width: '40vw',
+      },
+      modal: true,
+    },
+    data: {
+      id: id,
+    },
+  })
+}
 
 // Custom filter for roles
 FilterService.register('filterByRole', (value, filter) => {
@@ -98,7 +116,7 @@ const confirmDelete = function (id) {
           label="New User"
           icon="pi pi-user-plus"
           severity="success"
-          @click="router.push({ name: 'newuser' })"
+          @click="editDialog()"
         />
         <IconField>
           <InputIcon>
@@ -145,7 +163,7 @@ const confirmDelete = function (id) {
             icon="pi pi-pencil"
             outlined
             rounded
-            @click="router.push({ name: 'edituser', params: { id: slotProps.data.id } })"
+            @click="editDialog(slotProps.data.id)"
             v-tooltip.bottom="'Edit'"
           />
           <Button
