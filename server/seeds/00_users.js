@@ -42,6 +42,9 @@ const users = [
  */
 export async function up({ context: queryInterface }) {
   await queryInterface.bulkInsert("users", users);
+  if (process.env.DATABASE_DIALECT == 'postgres') {
+    await queryInterface.sequelize.query("SELECT setval('users_id_seq', max(id)) FROM users;");
+  }
 }
 
 /**

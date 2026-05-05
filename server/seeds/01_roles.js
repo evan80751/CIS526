@@ -30,6 +30,9 @@ const user_roles = [
 
 export async function up({ context: queryInterface }) {
   await queryInterface.bulkInsert("roles", roles);
+  if (process.env.DATABASE_DIALECT == 'postgres') {
+    await queryInterface.sequelize.query("SELECT setval('roles_id_seq', max(id)) FROM roles;");
+  }
   await queryInterface.bulkInsert("user_roles", user_roles);
 }
 

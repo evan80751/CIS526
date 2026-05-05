@@ -1,0 +1,91 @@
+services:
+
+  ######################################
+  # Lost Communities
+  #
+  # Repository:
+  # https://github.com/cis526-summer2022/restful-api-s25-evan80751
+  lostcommunities:
+
+    # Docker Image
+    image: ghcr.io/cis526-summer2022/restful-api-s25-evan80751:latest
+
+    # Container Name
+    container_name: lostcommunities
+
+    # Restart Container Unless Stopped
+    restart: unless-stopped
+
+    # Networks
+    networks:
+      - default
+      - lostcommunities_network
+
+    # Network Ports
+    ports:
+      - "3000:3000"
+
+    # Volumes
+    volumes:
+      - lostcommunities_data:/usr/src/app/data:rw
+      - lostcommunities_uploads:/usr/src/app/public/uploads:rw
+
+    # Environment Variables
+    environment:
+      # =+=+=+= REQUIRED VALUES =+=+=+=
+      SESSION_SECRET: 'thisisasupersecretkey'
+      JWT_SECRET_KEY: 'thisisasupersecretkey'
+      CAS_URL: 'https://testcas.cs.ksu.edu'
+      CAS_SERVICE_URL: 'http://localhost:3000'
+      DATABASE_DIALECT: 'postgres'
+      DATABASE_HOST: lostcommunities_db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: lostcommunities
+      DATABASE_PASSWORD: lostcommunities
+      DATABASE_NAME: lostcommunities
+      SEED_DATA: 'true'
+      #LOG_LEVEL: 'http'
+      #PORT: '3000'
+      #SESSION_NAME: 'connect.sid'
+      #OPENAPI_VISIBLE: 'false'
+      #OPENAPI_HOST: 'http://localhost:3000'
+      #BYPASS_AUTH: 'false'
+
+  ######################################
+  # Postgres Database
+  #
+  # Image Location:
+  # https://hub.docker.com/_/postgres
+  lostcommunities_db:
+
+    # Docker Image
+    image: postgres:17-alpine
+
+    # Container Name
+    container_name: lostcommunities_db
+
+    # Restart Container Unless Stopped
+    restart: unless-stopped
+
+    # Networks
+    networks:
+      - lostcommunities_network
+
+    # Volumes
+    volumes:
+      - lostcommunities_db_data:/var/lib/postgresql/data:rw
+
+    # Environment Variables
+    environment:
+      POSTGRES_USER: lostcommunities
+      POSTGRES_PASSWORD: lostcommunities
+      POSTGRES_DB: lostcommunities
+
+volumes:
+  lostcommunities_data:
+  lostcommunities_uploads:
+  lostcommunities_db_data:
+
+networks:
+  lostcommunities_network:
+    internal: true
