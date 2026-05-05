@@ -16,11 +16,20 @@ import logger from "./configs/logger.js";
 import apiRouter from "./routes/api.js";
 import authRouter from "./routes/auth.js";
 import passport from "passport";
+import history from 'connect-history-api-fallback'
 import tokenMiddleware from "./middlewares/token.js";
 
 var app = express();
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      "img-src": ["'self'", "https:"],
+      "connect-src": ["'self'", "blob:"],
+    }
+  }
+}))
 app.use(compression());
 
 app.use(requestLogger);
@@ -47,11 +56,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(tokenMiddleware);
-app.use(express.static(path.join(import.meta.dirname, "public")));
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
 app.use("/api", apiRouter);
 app.use("/auth", authRouter);
+app.use(history())
+app.use(express.static(path.join(import.meta.dirname, "public")));
 
 if (process.env.OPENAPI_VISIBLE === "true") {
   logger.warn("OpenAPI documentation visible!");

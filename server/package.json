@@ -15,6 +15,7 @@
     "@coursetable/passport-cas": "^0.1.4",
     "@dotenvx/dotenvx": "^1.57.2",
     "compression": "^1.8.1",
+    "connect-history-api-fallback": "^2.0.0",
     "connect-session-sequelize": "^8.0.6",
     "convert-csv-to-json": "^4.24.0",
     "cookie-parser": "~1.4.4",
