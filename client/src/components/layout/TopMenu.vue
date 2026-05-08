@@ -64,6 +64,12 @@ const items = ref([
     command: () => { router.push({ name: 'documents' }) },
     roles: ['view_documents', 'manage_documents', 'add_documents'],
   },
+  {
+    label: 'Metadata',
+    icon: 'pi pi-database',
+    command: () => { router.push({ name: 'metadata' }) },
+    roles: ['view_documents', 'manage_documents', 'add_documents'],
+  },
 ])
 
 // Filter items by role

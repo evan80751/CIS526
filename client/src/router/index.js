@@ -23,6 +23,7 @@ const requireRoles = (...roles) => {
   }
 }
 
+// Routes
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -105,6 +106,32 @@ const router = createRouter({
       path: '/documents/new',
       name: 'newdocument',
       component: () => import('../views/DocumentsEditView.vue'),
+      beforeEnter: requireRoles('manage_documents', 'add_documents'),
+    },
+{
+      path: '/metadata',
+      name: 'metadata',
+      component: () => import('../views/MetadataListView.vue'),
+      beforeEnter: requireRoles('view_documents', 'manage_documents', 'add_documents'),
+    },
+    {
+      path: '/metadata/:id',
+      name: 'viewmetadata',
+      component: () => import('../views/MetadataView.vue'),
+      props: true,
+      beforeEnter: requireRoles('view_documents', 'manage_documents', 'add_documents'),
+    },
+    {
+      path: '/metadata/:id/edit',
+      name: 'editmetadata',
+      component: () => import('../views/MetadataEditView.vue'),
+      props: true,
+      beforeEnter: requireRoles('manage_documents'),
+    },
+    {
+      path: '/metadata/new',
+      name: 'newmetadata',
+      component: () => import('../views/MetadataEditView.vue'),
       beforeEnter: requireRoles('manage_documents', 'add_documents'),
     },
   ],

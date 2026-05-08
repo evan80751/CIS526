@@ -4,25 +4,34 @@
  * @author Evan Jelle
  */
 // Import Libraries
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/configs/api'
 import { useTokenStore } from '@/stores/Token'
+import { storeToRefs } from 'pinia'
+import { useMetadataStore } from '@/stores/Metadata'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
+import Select from 'primevue/select'
 import { useConfirm } from 'primevue'
 import { useToast } from 'primevue/usetoast'
+
 const router = useRouter()
 const confirm = useConfirm()
 const toast = useToast()
 const tokenStore = useTokenStore()
+const metadataStore = useMetadataStore()
+const { documents, communities } = storeToRefs(metadataStore)
+metadataStore.hydrate()
 // Incoming Props
 const props = defineProps({
   id: String,
 })
 // State
 const metadata = ref(null)
+const selectedDocument = ref(null)
+const selectedCommunity = ref(null)
 // Load Metadata
 api
   .get('/api/v1/metadata/' + props.id)
@@ -51,6 +60,42 @@ const confirmDelete = function () {
         })
     },
   })
+}
+// Add Document
+const addDocument = function () {
+  if (!selectedDocument.value) return
+  api.post('/api/v1/metadata/' + props.id + '/add_document', { id: selectedDocument.value.id })
+    .then(function () {
+      metadata.value.documents.push(selectedDocument.value)
+      selectedDocument.value = null
+    })
+    .catch(function (error) { console.log(error) })
+}
+// Remove Document
+const removeDocument = function (document) {
+  api.post('/api/v1/metadata/' + props.id + '/remove_document', { id: document.id })
+    .then(function () {
+      metadata.value.documents = metadata.value.documents.filter((d) => d.id !== document.id)
+    })
+    .catch(function (error) { console.log(error) })
+}
+// Add Community
+const addCommunity = function () {
+  if (!selectedCommunity.value) return
+  api.post('/api/v1/metadata/' + props.id + '/add_community', { id: selectedCommunity.value.id })
+    .then(function () {
+      metadata.value.communities.push(selectedCommunity.value)
+      selectedCommunity.value = null
+    })
+    .catch(function (error) { console.log(error) })
+}
+// Remove Community
+const removeCommunity = function (community) {
+  api.post('/api/v1/metadata/' + props.id + '/remove_community', { id: community.id })
+    .then(function () {
+      metadata.value.communities = metadata.value.communities.filter((c) => c.id !== community.id)
+    })
+    .catch(function (error) { console.log(error) })
 }
 </script>
 <template>
@@ -97,8 +142,27 @@ const confirmDelete = function () {
     <Card class="mb-4">
       <template #content>
         <div v-if="metadata.communities.length === 0" class="text-gray-500">No communities linked.</div>
-        <div v-for="community in metadata.communities" :key="community.id" class="mb-1">
-          {{ community.name }} ({{ community.county?.name }})
+        <div v-for="community in metadata.communities" :key="community.id" class="flex justify-between items-center mb-1">
+          <span>{{ community.name }} ({{ community.county?.name }})</span>
+          <Button
+            v-if="tokenStore.has_role('manage_documents') || tokenStore.has_role('add_documents')"
+            icon="pi pi-times"
+            severity="danger"
+            rounded
+            outlined
+            size="small"
+            @click="removeCommunity(community)"
+          />
+        </div>
+        <div v-if="tokenStore.has_role('manage_documents') || tokenStore.has_role('add_documents')" class="flex gap-2 mt-2">
+          <Select
+            v-model="selectedCommunity"
+            :options="communities"
+            optionLabel="name"
+            placeholder="Select a community"
+            class="flex-1"
+          />
+          <Button icon="pi pi-plus" @click="addCommunity" />
         </div>
       </template>
     </Card>
@@ -106,8 +170,27 @@ const confirmDelete = function () {
     <Card>
       <template #content>
         <div v-if="metadata.documents.length === 0" class="text-gray-500">No documents linked.</div>
-        <div v-for="document in metadata.documents" :key="document.id" class="mb-1">
-          {{ document.title }}
+        <div v-for="document in metadata.documents" :key="document.id" class="flex justify-between items-center mb-1">
+          <span>{{ document.display_name }}</span>
+          <Button
+            v-if="tokenStore.has_role('manage_documents') || tokenStore.has_role('add_documents')"
+            icon="pi pi-times"
+            severity="danger"
+            rounded
+            outlined
+            size="small"
+            @click="removeDocument(document)"
+          />
+        </div>
+        <div v-if="tokenStore.has_role('manage_documents') || tokenStore.has_role('add_documents')" class="flex gap-2 mt-2">
+          <Select
+            v-model="selectedDocument"
+            :options="documents"
+            optionLabel="display_name"
+            placeholder="Select a document"
+            class="flex-1"
+          />
+          <Button icon="pi pi-plus" @click="addDocument" />
         </div>
       </template>
     </Card>
