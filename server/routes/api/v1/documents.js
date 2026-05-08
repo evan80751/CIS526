@@ -53,6 +53,8 @@ const upload = multer({ storage: storage });
  *     summary: documents list page
  *     description: Gets the list of all documents in the application
  *     tags: [documents]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: the list of documents
@@ -86,6 +88,8 @@ router.get("/", roleBasedAuth(["view_documents", "manage_documents", "add_docume
  *     summary: get single document
  *     description: Gets a single document by ID
  *     tags: [documents]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -127,6 +131,8 @@ router.get("/:id", roleBasedAuth(["view_documents", "manage_documents", "add_doc
  *   post:
  *     summary: create document
  *     tags: [documents]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       description: document
  *       required: true
@@ -177,6 +183,8 @@ router.post("/", roleBasedAuth(["manage_documents", "add_documents"]), async fun
  *   put:
  *     summary: update document
  *     tags: [documents]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -235,6 +243,8 @@ router.put("/:id", roleBasedAuth("manage_documents"), async function (req, res, 
  *   delete:
  *     summary: delete document
  *     tags: [documents]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -273,6 +283,8 @@ router.delete("/:id", roleBasedAuth("manage_documents"), async function (req, re
  *   post:
  *     summary: upload document
  *     tags: [documents]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

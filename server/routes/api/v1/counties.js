@@ -17,7 +17,6 @@ import logger from "../../../configs/logger.js";
 import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 // Create Express router
 const router = express.Router();
-
 /**
  * Gets the list of counties
  *
@@ -28,9 +27,11 @@ const router = express.Router();
  * @swagger
  * /api/v1/counties:
  *   get:
- *     summary: roles list page
+ *     summary: counties list page
  *     description: Gets the list of all counties in the application
  *     tags: [counties]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: the list of counties
@@ -41,7 +42,8 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/County'
  */
-router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {  try {
+router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {
+  try {
     const counties = await County.findAll({
       include: [
         {
@@ -57,5 +59,4 @@ router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_co
     res.status(500).end();
   }
 });
-
 export default router;

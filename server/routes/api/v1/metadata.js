@@ -67,6 +67,8 @@ const metadataIncludes = [
  *     summary: metadata list page
  *     description: Gets the list of all metadata in the application
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: the list of metadata
@@ -100,6 +102,8 @@ router.get("/", roleBasedAuth(["view_documents", "manage_documents", "add_docume
  *     summary: get single metadata
  *     description: Gets a single metadata item by ID
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -144,6 +148,8 @@ router.get("/:id", roleBasedAuth(["view_documents", "manage_documents", "add_doc
  *     summary: create metadata
  *     description: Creates a new metadata record. The owner is automatically set to the authenticated user.
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       description: metadata
  *       required: true
@@ -200,6 +206,8 @@ router.post("/", roleBasedAuth(["manage_documents", "add_documents"]), async fun
  *     summary: update metadata
  *     description: Updates an existing metadata record. The owner cannot be changed.
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -265,6 +273,8 @@ router.put("/:id", roleBasedAuth("manage_documents"), async function (req, res, 
  *   delete:
  *     summary: delete metadata
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -303,6 +313,8 @@ router.delete("/:id", roleBasedAuth("manage_documents"), async function (req, re
  *   post:
  *     summary: add document to metadata
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -359,6 +371,8 @@ router.post("/:id/add_document", roleBasedAuth(["manage_documents", "add_documen
  *   post:
  *     summary: remove document from metadata
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -415,6 +429,8 @@ router.post("/:id/remove_document", roleBasedAuth(["manage_documents", "add_docu
  *   post:
  *     summary: add community to metadata
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -471,6 +487,8 @@ router.post("/:id/add_community", roleBasedAuth(["manage_documents", "add_docume
  *   post:
  *     summary: remove community from metadata
  *     tags: [metadata]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

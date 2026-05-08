@@ -37,6 +37,8 @@ const router = express.Router();
  *     summary: communities list page
  *     description: Gets the list of all communities in the application
  *     tags: [communities]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: the list of communities
@@ -47,7 +49,8 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Community'
  */
-router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {  try {
+router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_communities"]), async function (req, res, next) {
+  try {
     const communities = await Community.findAll({
       include: [
         {
@@ -82,6 +85,8 @@ router.get("/", roleBasedAuth(["view_communities", "manage_communities", "add_co
  *     summary: get single community
  *     description: Gets a single community by ID
  *     tags: [communities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -137,6 +142,8 @@ router.get("/:id", roleBasedAuth(["view_communities", "manage_communities", "add
  *     summary: create community
  *     description: Creates a new community. The owner is automatically set to the authenticated user.
  *     tags: [communities]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       description: community
  *       required: true
@@ -150,7 +157,8 @@ router.get("/:id", roleBasedAuth(["view_communities", "manage_communities", "add
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.post("/", roleBasedAuth(["manage_communities", "add_communities"]), async function (req, res, next) {  try {
+router.post("/", roleBasedAuth(["manage_communities", "add_communities"]), async function (req, res, next) {
+  try {
     const result = await database.transaction(async (t) => {
       const community = await Community.create(
         {
@@ -188,6 +196,8 @@ router.post("/", roleBasedAuth(["manage_communities", "add_communities"]), async
  *     summary: update community
  *     description: Updates an existing community. The owner cannot be changed.
  *     tags: [communities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -208,7 +218,8 @@ router.post("/", roleBasedAuth(["manage_communities", "add_communities"]), async
  *       422:
  *         $ref: '#/components/responses/ValidationError'
  */
-router.put("/:id", roleBasedAuth("manage_communities"), async function (req, res, next) {  try {
+router.put("/:id", roleBasedAuth("manage_communities"), async function (req, res, next) {
+  try {
     const community = await Community.findByPk(req.params.id);
     if (!community) {
       res.status(404).end();
@@ -248,6 +259,8 @@ router.put("/:id", roleBasedAuth("manage_communities"), async function (req, res
  *   delete:
  *     summary: delete community
  *     tags: [communities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

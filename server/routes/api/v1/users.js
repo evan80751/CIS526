@@ -8,13 +8,10 @@
  *   name: users
  *   description: Users endpoints
  */
-
 // Import libraries
 import express from "express";
-
 // Import models
 import { User, Role } from "../../../models/models.js";
-
 // Import logger
 import logger from "../../../configs/logger.js";
 import database from "../../../configs/database.js";
@@ -22,11 +19,9 @@ import sendSuccess from "../../../utilities/send-success.js";
 import { ValidationError } from "sequelize";
 import handleValidationError from "../../../utilities/handle-validation-error.js";
 import roleBasedAuth from "../../../middlewares/authorized-roles.js";
-
 // Create Express router
 const router = express.Router();
 router.use(roleBasedAuth("manage_users"));
-
 /**
  * Gets the list of users
  *
@@ -40,6 +35,8 @@ router.use(roleBasedAuth("manage_users"));
  *     summary: users list page
  *     description: Gets the list of all users in the application
  *     tags: [users]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: the list of users
@@ -59,7 +56,6 @@ router.get("/", async function (req, res, next) {
     res.status(500).end();
   }
 });
-
 /**
  * Gets a single user
  *
@@ -80,6 +76,8 @@ router.get("/", async function (req, res, next) {
  *         schema:
  *           type: integer
  *         description: the user id
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: a single user
@@ -117,6 +115,8 @@ router.get("/:id", async function (req, res, next) {
  *   post:
  *     summary: create user
  *     tags: [users]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -152,7 +152,6 @@ router.post("/", async function (req, res, next) {
     }
   }
 });
-
 /**
  * Updates a user
  *
@@ -165,6 +164,8 @@ router.post("/", async function (req, res, next) {
  *   put:
  *     summary: update user
  *     tags: [users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -214,7 +215,6 @@ router.put("/:id", async function (req, res, next) {
     }
   }
 });
-
 /**
  * Deletes a user
  *
@@ -227,6 +227,8 @@ router.put("/:id", async function (req, res, next) {
  *   delete:
  *     summary: delete user
  *     tags: [users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -254,5 +256,4 @@ router.delete("/:id", async function (req, res, next) {
     res.status(500).end();
   }
 });
-
 export default router;
