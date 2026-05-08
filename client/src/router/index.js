@@ -134,6 +134,13 @@ const router = createRouter({
       component: () => import('../views/MetadataEditView.vue'),
       beforeEnter: requireRoles('manage_documents', 'add_documents'),
     },
+    {
+      path: '/metadata/tags/:tag',
+      name: 'metadatatag',
+      component: () => import('../views/MetadataListView.vue'),
+      props: true,
+      beforeEnter: requireRoles('view_documents', 'manage_documents', 'add_documents'),
+    },
   ],
 })
 

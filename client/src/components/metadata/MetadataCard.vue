@@ -21,12 +21,16 @@ const props = defineProps({
     <template #content>
       <p class="text-sm mb-2">{{ metadata.abstract }}</p>
       <div class="flex flex-wrap gap-1">
+        <span
+        v-for="keyword in metadata.keywords.split(' ')"
+        :key="keyword"
+        @click.stop="router.push({ name: 'metadatatag', params: { tag: keyword.trim() } })"
+        >
         <Chip
-          v-for="keyword in metadata.keywords.split(' ')"
-          :key="keyword"
-          :label="keyword.trim()"
-          class="text-xs"
+            :label="keyword.trim()"
+            class="text-xs cursor-pointer"
         />
+        </span>
       </div>
     </template>
     <template #footer>

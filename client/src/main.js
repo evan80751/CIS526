@@ -12,7 +12,7 @@ import Tooltip from 'primevue/tooltip'
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 import DialogService from 'primevue/dialogservice'
-
+import OpenLayersMap from 'vue3-openlayers'
 // Import CSS
 import './assets/main.css'
 import 'primeicons/primeicons.css'
@@ -41,6 +41,7 @@ app.use(PrimeVue, {
 app.use(ToastService)
 app.use(ConfirmationService)
 app.use(DialogService)
+app.use(OpenLayersMap)
 
 // Install Directives
 app.directive('tooltip', Tooltip)

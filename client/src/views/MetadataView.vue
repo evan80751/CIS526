@@ -16,7 +16,6 @@ import Chip from 'primevue/chip'
 import Select from 'primevue/select'
 import { useConfirm } from 'primevue'
 import { useToast } from 'primevue/usetoast'
-
 const router = useRouter()
 const confirm = useConfirm()
 const toast = useToast()
@@ -166,6 +165,34 @@ const removeCommunity = function (community) {
         </div>
       </template>
     </Card>
+    <div v-if="metadata.communities.length > 0 && metadata.communities[0].lat && metadata.communities[0].long" class="mb-4">
+      <h2 class="text-xl font-bold mb-2">Map</h2>
+      <ol-map style="height: 400px">
+        <ol-view
+          :center="[metadata.communities[0].long, metadata.communities[0].lat]"
+          :zoom="12"
+          projection="EPSG:4326"
+        />
+        <ol-tile-layer>
+          <ol-source-osm />
+        </ol-tile-layer>
+        <ol-vector-layer>
+          <ol-source-vector>
+            <ol-feature>
+              <ol-geom-point
+                :coordinates="[metadata.communities[0].long, metadata.communities[0].lat]"
+              />
+              <ol-style>
+                <ol-style-circle :radius="8">
+                  <ol-style-fill color="red" />
+                  <ol-style-stroke color="white" :width="2" />
+                </ol-style-circle>
+              </ol-style>
+            </ol-feature>
+          </ol-source-vector>
+        </ol-vector-layer>
+      </ol-map>
+    </div>
     <h2 class="text-xl font-bold mb-2">Documents</h2>
     <Card>
       <template #content>
