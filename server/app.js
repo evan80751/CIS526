@@ -7,7 +7,6 @@ import connectSessionSequelize from "connect-session-sequelize";
 import database from "./configs/database.js";
 import requestLogger from "./middlewares/request-logger.js";
 import indexRouter from "./routes/index.js";
-import usersRouter from "./routes/users.js";
 import compression from "compression";
 import helmet from "helmet";
 import swaggerUI from "swagger-ui-express";

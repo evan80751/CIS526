@@ -14,6 +14,8 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import { useTokenStore } from '@/stores/Token'
+const tokenStore = useTokenStore()
 import { format } from 'date-fns'
 
 const router = useRouter()
@@ -84,7 +86,12 @@ const deleteCommunity = function (community) {
           <span class="text-xl font-bold">Communities</span>
           <div class="flex gap-2">
             <InputText v-model="filters['global'].value" placeholder="Search..." />
-            <Button label="New Community" icon="pi pi-plus" @click="router.push({ name: 'newcommunity' })" />
+            <Button
+              v-if="tokenStore.has_role('manage_communities') || tokenStore.has_role('add_communities')"
+              label="New Community"
+              icon="pi pi-plus"
+              @click="router.push({ name: 'newcommunity' })"
+            />
           </div>
         </div>
       </template>
@@ -101,8 +108,18 @@ const deleteCommunity = function (community) {
       <Column header="Actions">
         <template #body="{ data }">
           <div class="flex gap-2">
-            <Button icon="pi pi-pencil" severity="info" @click="router.push({ name: 'editcommunity', params: { id: data.id } })" />
-            <Button icon="pi pi-trash" severity="danger" @click="deleteCommunity(data)" />
+            <Button
+              v-if="tokenStore.has_role('manage_communities')"
+              icon="pi pi-pencil"
+              severity="info"
+              @click="router.push({ name: 'editcommunity', params: { id: data.id } })"
+            />
+            <Button
+              v-if="tokenStore.has_role('manage_communities')"
+              icon="pi pi-trash"
+              severity="danger"
+              @click="deleteCommunity(data)"
+            />          
           </div>
         </template>
       </Column>

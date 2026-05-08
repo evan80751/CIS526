@@ -14,6 +14,8 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import { useTokenStore } from '@/stores/Token'
+const tokenStore = useTokenStore()
 import { format } from 'date-fns'
 
 const router = useRouter()
@@ -84,7 +86,12 @@ const deleteDocument = function (document) {
           <span class="text-xl font-bold">Documents</span>
           <div class="flex gap-2">
             <InputText v-model="filters['global'].value" placeholder="Search..." />
-            <Button label="New Document" icon="pi pi-plus" @click="router.push({ name: 'newdocument' })" />
+            <Button
+              v-if="tokenStore.has_role('manage_documents') || tokenStore.has_role('add_documents')"
+              label="New Document" 
+              icon="pi pi-plus" 
+              @click="router.push({ name: 'newdocument' })" 
+            />
           </div>
         </div>
       </template>
@@ -108,8 +115,18 @@ const deleteDocument = function (document) {
       <Column header="Actions">
         <template #body="{ data }">
           <div class="flex gap-2">
-            <Button icon="pi pi-pencil" severity="info" @click="router.push({ name: 'editdocument', params: { id: data.id } })" />
-            <Button icon="pi pi-trash" severity="danger" @click="deleteDocument(data)" />
+            <Button
+              v-if="tokenStore.has_role('manage_documents')"
+              icon="pi pi-pencil"
+              severity="info"
+              @click="router.push({ name: 'editdocument', params: { id: data.id } })"
+            />
+            <Button
+              v-if="tokenStore.has_role('manage_documents')"
+              icon="pi pi-trash"
+              severity="danger"
+              @click="deleteDocument(data)"
+            />          
           </div>
         </template>
       </Column>
