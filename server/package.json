@@ -8,7 +8,7 @@
     "dev": "LOG_LEVEL=debug nodemon ./bin/www",
     "lint": "npx eslint --fix .",
     "format": "npx prettier . --write",
-    "test": "mocha --require test/hooks.js --recursive --parallel --timeout 2000 --exit",
+    "test": "mocha --require test/hooks.js --recursive --ignore test/helpers.js --parallel --timeout 2000 --exit",
     "coverage": "c8 npm test"
   },
   "dependencies": {
