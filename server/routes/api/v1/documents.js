@@ -25,6 +25,10 @@ import roleBasedAuth from "../../../middlewares/authorized-roles.js";
 // Import nanoid and mine-types
 import { nanoid } from "nanoid";
 import mime from "mime-types";
+import fs from "fs";
+
+// Ensure uploads directory exists
+fs.mkdirSync("public/uploads", { recursive: true });
 
 // Create Express router
 const router = express.Router();
