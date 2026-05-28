@@ -20,12 +20,16 @@ import tokenMiddleware from "./middlewares/token.js";
 
 var app = express();
 
+const forceHttps = process.env.FORCE_HTTPS === "true";
+
 app.use(helmet({
+  hsts: forceHttps,
   contentSecurityPolicy: {
     useDefaults: true,
     directives: {
       "img-src": ["'self'", "https:"],
       "connect-src": ["'self'", "blob:"],
+      "upgrade-insecure-requests": forceHttps ? [] : null,
     }
   }
 }))
